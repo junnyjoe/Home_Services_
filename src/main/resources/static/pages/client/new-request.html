@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle annonce | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: var(--bg-gradient-cool);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-header .logo-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .page-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .page-title h1 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .page-title p {
+            color: var(--gray-600);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-6);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .form-section-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-4);
+            color: var(--gray-800);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-4);
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .urgency-selector {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        .urgency-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .urgency-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .urgency-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-1);
+            padding: var(--spacing-3);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+
+        .urgency-option input:checked+.urgency-card {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .urgency-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .urgency-card .label {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        .urgency-card .desc {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-3);
+        }
+
+        .category-option {
+            position: relative;
+        }
+
+        .category-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-3);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .category-option input:checked+.category-card {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .category-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .category-card .name {
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .quartier-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            padding-right: 2.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-6);
+        }
+
+        .form-actions .btn {
+            flex: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/client/dashboard.html" class="back-link">← Retour au tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>Créer une annonce</h1>
+                <p>Décrivez le service dont vous avez besoin</p>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <form id="request-form" class="form-card">
+                <!-- Catégorie -->
+                <div class="form-section">
+                    <div class="form-section-title">🏷️ Catégorie de service</div>
+                    <div class="category-grid" id="category-grid">
+                        <!-- Chargé dynamiquement -->
+                    </div>
+                    <span class="form-error" id="category-error"></span>
+                </div>
+
+                <!-- Détails -->
+                <div class="form-section">
+                    <div class="form-section-title">📝 Détails de la demande</div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="titre">Titre de l'annonce</label>
+                        <input type="text" id="titre" class="form-input"
+                            placeholder="Ex: Réparation fuite d'eau cuisine" required>
+                        <span class="form-hint">Soyez précis pour attirer les bons prestataires</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="description">Description détaillée</label>
+                        <textarea id="description" class="form-input" rows="5"
+                            placeholder="Décrivez votre besoin en détail : le problème, ce que vous attendez, etc."
+                            required></textarea>
+                        <span class="form-hint">Minimum 20 caractères</span>
+                    </div>
+                </div>
+
+                <!-- Localisation -->
+                <div class="form-section">
+                    <div class="form-section-title">📍 Localisation</div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="quartier">Quartier</label>
+                        <select id="quartier" class="form-input quartier-select" required>
+                            <option value="">Sélectionnez un quartier</option>
+                            <optgroup label="Cocody">
+                                <option value="Cocody - Riviera">Riviera</option>
+                                <option value="Cocody - Angré">Angré</option>
+                                <option value="Cocody - Deux Plateaux">Deux Plateaux</option>
+                                <option value="Cocody - Centre">Cocody Centre</option>
+                            </optgroup>
+                            <optgroup label="Marcory">
+                                <option value="Marcory - Zone 4">Zone 4</option>
+                                <option value="Marcory - Résidentiel">Marcory Résidentiel</option>
+                            </optgroup>
+                            <optgroup label="Yopougon">
+                                <option value="Yopougon - Maroc">Maroc</option>
+                                <option value="Yopougon - Sicogi">Sicogi</option>
+                                <option value="Yopougon - Niangon">Niangon</option>
+                            </optgroup>
+                            <optgroup label="Plateau">
+                                <option value="Plateau">Plateau Centre</option>
+                            </optgroup>
+                            <optgroup label="Autres">
+                                <option value="Treichville">Treichville</option>
+                                <option value="Koumassi">Koumassi</option>
+                                <option value="Port-Bouët">Port-Bouët</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="adresse">Adresse précise <span
+                                class="text-muted">(optionnel)</span></label>
+                        <input type="text" id="adresse" class="form-input"
+                            placeholder="Visible uniquement après sélection d'un prestataire">
+                    </div>
+                </div>
+
+                <!-- Budget et Date -->
+                <div class="form-section">
+                    <div class="form-section-title">💰 Budget et Planning</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="budgetMin">Budget min (FCFA)</label>
+                            <input type="number" id="budgetMin" class="form-input" placeholder="Ex: 5000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="budgetMax">Budget max (FCFA)</label>
+                            <input type="number" id="budgetMax" class="form-input" placeholder="Ex: 15000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="datePrestation">Date souhaitée</label>
+                        <input type="date" id="datePrestation" class="form-input">
+                    </div>
+                </div>
+
+                <!-- Urgence -->
+                <div class="form-section">
+                    <div class="form-section-title">⏰ Niveau d'urgence</div>
+                    <div class="urgency-selector">
+                        <label class="urgency-option">
+                            <input type="radio" name="urgence" value="NORMAL" checked>
+                            <div class="urgency-card">
+                                <span class="icon">🕐</span>
+                                <span class="label">Normal</span>
+                                <span class="desc">Sous 1 semaine</span>
+                            </div>
+                        </label>
+                        <label class="urgency-option">
+                            <input type="radio" name="urgence" value="URGENT">
+                            <div class="urgency-card">
+                                <span class="icon">⚡</span>
+                                <span class="label">Urgent</span>
+                                <span class="desc">Sous 2-3 jours</span>
+                            </div>
+                        </label>
+                        <label class="urgency-option">
+                            <input type="radio" name="urgence" value="TRES_URGENT">
+                            <div class="urgency-card">
+                                <span class="icon">🔥</span>
+                                <span class="label">Très urgent</span>
+                                <span class="desc">Dans les 24h</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="save-draft-btn">Sauvegarder brouillon</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Publier l'annonce</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Require client role
+        if (!AuthGuard.requireRole('CLIENT')) {
+            // Redirect
+        }
+
+        let selectedCategoryId = null;
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await CategoryService.getAll();
+                if (response.success && response.data) {
+                    const grid = document.getElementById('category-grid');
+                    grid.innerHTML = response.data.map(cat => `
+                        <label class="category-option">
+                            <input type="radio" name="category" value="${cat.id}">
+                            <div class="category-card">
+                                <span class="icon">${cat.icone || '📦'}</span>
+                                <span class="name">${cat.nom}</span>
+                            </div>
+                        </label>
+                    `).join('');
+
+                    // Add event listeners
+                    grid.querySelectorAll('input[name="category"]').forEach(input => {
+                        input.addEventListener('change', () => {
+                            selectedCategoryId = parseInt(input.value);
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Submit form
+        async function submitForm(publish) {
+            const form = document.getElementById('request-form');
+            const submitBtn = publish ? form.querySelector('button[type="submit"]') : document.getElementById('save-draft-btn');
+
+            UI.clearAlerts('#alert-container');
+            UI.clearFieldErrors(form);
+
+            // Validate
+            if (!selectedCategoryId) {
+                document.getElementById('category-error').textContent = 'Veuillez sélectionner une catégorie';
+                return;
+            }
+
+            const titre = document.getElementById('titre').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const quartier = document.getElementById('quartier').value;
+
+            if (titre.length < 5) {
+                UI.showFieldError(document.getElementById('titre'), 'Le titre doit contenir au moins 5 caractères');
+                return;
+            }
+
+            if (description.length < 20) {
+                UI.showFieldError(document.getElementById('description'), 'La description doit contenir au moins 20 caractères');
+                return;
+            }
+
+            if (!quartier) {
+                UI.showFieldError(document.getElementById('quartier'), 'Le quartier est obligatoire');
+                return;
+            }
+
+            UI.setLoading(submitBtn, true);
+
+            try {
+                const data = {
+                    categoryId: selectedCategoryId,
+                    titre,
+                    description,
+                    quartier,
+                    adresse: document.getElementById('adresse').value.trim() || null,
+                    budgetMin: document.getElementById('budgetMin').value ? parseFloat(document.getElementById('budgetMin').value) : null,
+                    budgetMax: document.getElementById('budgetMax').value ? parseFloat(document.getElementById('budgetMax').value) : null,
+                    datePrestation: document.getElementById('datePrestation').value || null,
+                    urgence: document.querySelector('input[name="urgence"]:checked').value,
+                    publier: publish
+                };
+
+                const response = await ApiClient.post('/requests', data);
+
+                if (response.success) {
+                    UI.showAlert('#alert-container', publish ? 'Annonce publiée avec succès !' : 'Brouillon sauvegardé', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/pages/client/dashboard.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                UI.showAlert('#alert-container', error.message || 'Une erreur est survenue', 'error');
+            } finally {
+                UI.setLoading(submitBtn, false);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('request-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitForm(true);
+        });
+
+        document.getElementById('save-draft-btn').addEventListener('click', () => {
+            submitForm(false);
+        });
+
+        // Set min date to today
+        document.getElementById('datePrestation').min = new Date().toISOString().split('T')[0];
+
+        // Initialize
+        loadCategories();
+    </script>
+</body>
+
+</html>

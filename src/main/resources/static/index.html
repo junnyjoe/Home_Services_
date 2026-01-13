@@ -1,48 +1,495 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prix Agricoles — Abidjan</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Home Services - Trouvez les meilleurs prestataires de services à Abidjan">
+  <title>Home Services | Plateforme de Services à Abidjan</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    /* Landing Page Specific Styles */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(-5%, 5%);
+      }
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-4) var(--spacing-8);
+      position: relative;
+      z-index: 10;
+    }
+
+    .navbar .logo {
+      margin: 0;
+    }
+
+    .navbar .logo-icon {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar .logo-text {
+      color: white;
+      -webkit-text-fill-color: white;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: var(--spacing-4);
+    }
+
+    .navbar-links .btn-ghost {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .navbar-links .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .navbar-links .btn-primary {
+      background: white;
+      color: var(--primary-600);
+    }
+
+    .navbar-links .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Hero Content */
+    .hero-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--spacing-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      color: white;
+      margin-bottom: var(--spacing-6);
+      line-height: 1.1;
+    }
+
+    .hero-title span {
+      display: block;
+      background: linear-gradient(90deg, #fbbf24, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-xl);
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 600px;
+      margin-bottom: var(--spacing-8);
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: var(--spacing-4);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-cta .btn {
+      padding: var(--spacing-4) var(--spacing-8);
+      font-size: var(--font-size-lg);
+    }
+
+    .hero-cta .btn-primary {
+      background: white;
+      color: var(--primary-600);
+    }
+
+    .hero-cta .btn-secondary {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .hero-cta .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: var(--spacing-12);
+      margin-top: var(--spacing-12);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-4xl);
+      font-weight: 800;
+      color: white;
+    }
+
+    .stat-label {
+      font-size: var(--font-size-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Categories Section */
+    .categories-section {
+      padding: var(--spacing-16) var(--spacing-8);
+      background: var(--bg-secondary);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: var(--spacing-12);
+    }
+
+    .section-title h2 {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .section-title p {
+      color: var(--gray-600);
+      font-size: var(--font-size-lg);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-6);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-6);
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--spacing-3);
+    }
+
+    .category-name {
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    /* How it works */
+    .how-it-works {
+      padding: var(--spacing-16) var(--spacing-8);
+      background: white;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-8);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .step {
+      text-align: center;
+      padding: var(--spacing-6);
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-gradient-cool);
+      color: white;
+      font-weight: 700;
+      font-size: var(--font-size-xl);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-4);
+    }
+
+    .step h3 {
+      margin-bottom: var(--spacing-2);
+    }
+
+    .step p {
+      color: var(--gray-600);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-dark);
+      color: rgba(255, 255, 255, 0.7);
+      padding: var(--spacing-8);
+      text-align: center;
+    }
+
+    .footer p {
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: var(--spacing-4);
+      }
+
+      .navbar-links {
+        gap: var(--spacing-2);
+      }
+
+      .navbar-links .btn {
+        padding: var(--spacing-2) var(--spacing-4);
+        font-size: var(--font-size-sm);
+      }
+
+      .stats {
+        gap: var(--spacing-6);
+      }
+
+      .stat-value {
+        font-size: var(--font-size-2xl);
+      }
+    }
+
+    /* User Menu */
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .user-greeting {
+      color: white;
+      font-weight: 500;
+    }
+  </style>
 </head>
+
 <body>
-  <header class="banner">
-    <div class="nav">
-      <h1>Prix Agricoles à Abidjan</h1>
-      <nav>
-        <a href="index.html">Accueil</a>
-        <a href="login.html">Connexion</a>
-        <a href="admin.html">Admin</a>
-      </nav>
+  <!-- Hero Section -->
+  <section class="hero">
+    <nav class="navbar">
+      <div class="logo">
+        <div class="logo-icon">🏠</div>
+        <span class="logo-text">Home Services</span>
+      </div>
+
+      <div class="navbar-links" id="nav-links">
+        <!-- Links will be populated by JavaScript -->
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Trouvez le prestataire idéal
+        <span>à Abidjan</span>
+      </h1>
+      <p class="hero-subtitle">
+        La plateforme qui connecte clients et prestataires de services qualifiés.
+        Ménage, plomberie, électricité et bien plus.
+      </p>
+      <div class="hero-cta" id="hero-cta">
+        <!-- CTA will be populated by JavaScript -->
+      </div>
+
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value">500+</div>
+          <div class="stat-label">Prestataires</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">2000+</div>
+          <div class="stat-label">Services réalisés</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">4.8/5</div>
+          <div class="stat-label">Satisfaction</div>
+        </div>
+      </div>
     </div>
-    <p>Comparez les prix, suivez l'évolution et repérez les hausses suspectes.</p>
-  </header>
+  </section>
 
-  <main class="container">
-    <section class="controls">
-      <label>Produit
-        <select id="produitSelect"></select>
-      </label>
-      <label>Date
-        <input type="date" id="dateInput" />
-      </label>
-      <button id="btnCompare">Comparer</button>
-    </section>
+  <!-- Categories Section -->
+  <section class="categories-section">
+    <div class="section-title">
+      <h2>Nos catégories de services</h2>
+      <p>Trouvez le service dont vous avez besoin</p>
+    </div>
+    <div class="categories-grid" id="categories-grid">
+      <!-- Categories will be loaded dynamically -->
+      <div class="category-card">
+        <div class="category-icon">🧹</div>
+        <div class="category-name">Ménage</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">🔧</div>
+        <div class="category-name">Plomberie</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">⚡</div>
+        <div class="category-name">Électricité</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">❄️</div>
+        <div class="category-name">Climatisation</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">🌿</div>
+        <div class="category-name">Jardinage</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">📦</div>
+        <div class="category-name">Déménagement</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">💻</div>
+        <div class="category-name">Informatique</div>
+      </div>
+      <div class="category-card">
+        <div class="category-icon">💇</div>
+        <div class="category-name">Coiffure</div>
+      </div>
+    </div>
+  </section>
 
-    <section id="results">
-      <div id="loader" aria-hidden="true" class="loader" style="display:none" aria-live="polite"></div>
-      <div id="summary" aria-live="polite"></div>
-      <table id="prixTable" aria-describedby="summary">
-        <thead><tr><th scope="col">Marché</th><th scope="col">Prix</th><th scope="col">Indicateur</th></tr></thead>
-        <tbody></tbody>
-      </table>
+  <!-- How it works -->
+  <section class="how-it-works">
+    <div class="section-title">
+      <h2>Comment ça marche ?</h2>
+      <p>Simple et rapide en 3 étapes</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Publiez votre besoin</h3>
+        <p>Décrivez le service dont vous avez besoin en quelques clics</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Recevez des candidatures</h3>
+        <p>Les prestataires qualifiés vous envoient leurs propositions</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Choisissez et contactez</h3>
+        <p>Sélectionnez le meilleur profil et échangez directement</p>
+      </div>
+    </div>
+  </section>
 
-      <canvas id="chart" width="400" height="200" aria-label="Graphique d'évolution des prix"></canvas>
-    </section>
-  </main>
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Home Services - Plateforme de services à Abidjan</p>
+  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js"></script>
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script>
+    // Update navigation based on auth state
+    function updateNavigation() {
+      const navLinks = document.getElementById('nav-links');
+      const heroCta = document.getElementById('hero-cta');
+
+      if (AuthService.isAuthenticated()) {
+        const user = AuthService.getUser();
+
+        navLinks.innerHTML = `
+                    <div class="user-menu">
+                        <span class="user-greeting">Bonjour, ${user.nom.split(' ')[0]}</span>
+                        <a href="#" class="btn btn-primary" onclick="goToDashboard()">Mon espace</a>
+                        <button class="btn btn-ghost" onclick="AuthService.logout()">Déconnexion</button>
+                    </div>
+                `;
+
+        heroCta.innerHTML = `
+                    <a href="#" class="btn btn-primary" onclick="goToDashboard()">
+                        ${user.role === 'CLIENT' ? 'Publier une annonce' : 'Voir les annonces'}
+                    </a>
+                `;
+      } else {
+        navLinks.innerHTML = `
+                    <a href="/pages/auth/login.html" class="btn btn-ghost">Connexion</a>
+                    <a href="/pages/auth/register.html" class="btn btn-primary">Inscription</a>
+                `;
+
+        heroCta.innerHTML = `
+                    <a href="/pages/auth/register.html" class="btn btn-primary">Commencer maintenant</a>
+                    <a href="/pages/auth/login.html" class="btn btn-secondary">J'ai déjà un compte</a>
+                `;
+      }
+    }
+
+    function goToDashboard() {
+      AuthService.redirectBasedOnRole();
+    }
+
+    // Initialize
+    updateNavigation();
+  </script>
 </body>
+
 </html>

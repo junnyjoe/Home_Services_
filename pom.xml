@@ -9,9 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.home</groupId>
-    <artifactId>abidjan-prices</artifactId>
+    <artifactId>home-services</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>Home Services</name>
+    <description>Place de marché de services - Plateforme de mise en relation clients et prestataires à Abidjan</description>
 
     <properties>
         <java.version>17</java.version>

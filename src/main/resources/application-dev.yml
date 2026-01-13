@@ -1,22 +1,37 @@
+# Configuration pour le développement local
 spring:
   datasource:
-    url: jdbc:h2:mem:abidjan_dev;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    url: jdbc:h2:mem:homeservices_dev;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: false
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
 
-# Disable Flyway in dev to avoid applying Postgres-specific migrations on H2
-flyway:
+# Disable Flyway in dev to use JPA auto DDL
+spring.flyway:
   enabled: false
 
+# JWT config for dev
 jwt:
   secret: d1f2e3c4b5a6978877665544332211ffeeddccbbaa99887766554433221100aa
-  expirationMs: 3600000
+  access-token-expiration-ms: 86400000
+  refresh-token-expiration-ms: 604800000
 
+# Logging
 logging:
   level:
-    org.springframework: INFO
+    root: INFO
+    com.home.services: DEBUG
+    org.springframework.security: DEBUG

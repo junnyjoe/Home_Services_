@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Client | Home Services</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Dashboard Layout */
+        .dashboard {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: var(--bg-gradient-cool);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header .logo {
+            margin: 0;
+        }
+
+        .dashboard-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .dashboard-header .logo-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .welcome-section {
+            margin-bottom: var(--spacing-8);
+        }
+
+        .welcome-section h1 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .welcome-section p {
+            color: var(--gray-600);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .stat-card-icon.blue {
+            background: var(--primary-100);
+        }
+
+        .stat-card-icon.orange {
+            background: var(--secondary-100);
+        }
+
+        .stat-card-icon.green {
+            background: var(--success-50);
+        }
+
+        .stat-card-value {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .stat-card-label {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .action-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-gradient-cool);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .action-content h3 {
+            margin: 0 0 var(--spacing-1);
+            font-size: var(--font-size-lg);
+        }
+
+        .action-content p {
+            margin: 0;
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Recent Activity */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .section-header h2 {
+            margin: 0;
+        }
+
+        .activity-list {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4) var(--spacing-6);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .activity-time {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .activity-status {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: var(--warning-50);
+            color: var(--warning-600);
+        }
+
+        .status-active {
+            background: var(--success-50);
+            color: var(--success-600);
+        }
+
+        .status-completed {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-12);
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: var(--spacing-4);
+                flex-direction: column;
+                gap: var(--spacing-4);
+            }
+
+            .dashboard-content {
+                padding: var(--spacing-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <span class="user-name" id="user-name">Chargement...</span>
+                </div>
+                <button class="btn-logout" onclick="AuthService.logout()">Déconnexion</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Welcome -->
+            <section class="welcome-section">
+                <h1>Bienvenue, <span id="welcome-name">Client</span> !</h1>
+                <p>Que souhaitez-vous faire aujourd'hui ?</p>
+            </section>
+
+            <!-- Stats -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-icon blue">📋</div>
+                    <div class="stat-card-value" id="stat-requests">0</div>
+                    <div class="stat-card-label">Annonces publiées</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon orange">📨</div>
+                    <div class="stat-card-value" id="stat-applications">0</div>
+                    <div class="stat-card-label">Candidatures reçues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon green">✅</div>
+                    <div class="stat-card-value" id="stat-completed">0</div>
+                    <div class="stat-card-label">Services terminés</div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <a href="/pages/client/new-request.html" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <div class="action-content">
+                        <h3>Nouvelle annonce</h3>
+                        <p>Publiez un besoin de service</p>
+                    </div>
+                </a>
+                <a href="/pages/client/my-requests.html" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <div class="action-content">
+                        <h3>Mes annonces</h3>
+                        <p>Gérez vos annonces en cours</p>
+                    </div>
+                </a>
+                <a href="/pages/messages.html" class="action-card">
+                    <div class="action-icon">💬</div>
+                    <div class="action-content">
+                        <h3>Messages</h3>
+                        <p>Échangez avec les prestataires</p>
+                    </div>
+                </a>
+            </section>
+
+            <!-- Recent Activity -->
+            <section>
+                <div class="section-header">
+                    <h2>Activité récente</h2>
+                    <a href="#" class="btn btn-ghost">Voir tout</a>
+                </div>
+                <div class="activity-list" id="activity-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>Aucune activité récente</p>
+                        <p>Publiez votre première annonce pour commencer !</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Require client role
+        if (!AuthGuard.requireRole('CLIENT')) {
+            // Will redirect
+        } else {
+            // Load user info
+            const user = AuthService.getUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.nom;
+                document.getElementById('welcome-name').textContent = user.nom.split(' ')[0];
+            }
+
+            // TODO: Load actual stats and activity from API
+        }
+    </script>
+</body>
+
+</html>

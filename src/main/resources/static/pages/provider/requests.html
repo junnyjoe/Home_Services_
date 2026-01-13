@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annonces disponibles | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-header .logo-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link {
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .page-title h1 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .page-title p {
+            color: var(--gray-600);
+        }
+
+        /* Filters */
+        .filters-bar {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-4) var(--spacing-6);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-6);
+            display: flex;
+            gap: var(--spacing-4);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-1);
+        }
+
+        .filter-label {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: var(--spacing-2) var(--spacing-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            background: white;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-500);
+        }
+
+        .search-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-2) var(--spacing-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+        }
+
+        .btn-filter {
+            background: var(--secondary-500);
+            color: white;
+            border: none;
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .btn-filter:hover {
+            background: var(--secondary-600);
+        }
+
+        .btn-reset {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border: none;
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+
+        /* Results */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .results-count {
+            color: var(--gray-600);
+        }
+
+        /* Request Cards */
+        .requests-grid {
+            display: grid;
+            gap: var(--spacing-4);
+        }
+
+        .request-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-fast);
+        }
+
+        .request-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+        }
+
+        .request-badges {
+            display: flex;
+            gap: var(--spacing-2);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .badge-category {
+            background: var(--secondary-50);
+            color: var(--secondary-600);
+        }
+
+        .badge-urgent {
+            background: var(--warning-50);
+            color: var(--warning-600);
+        }
+
+        .badge-tres-urgent {
+            background: var(--error-50);
+            color: var(--error-600);
+        }
+
+        .badge-normal {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .request-time {
+            font-size: var(--font-size-xs);
+            color: var(--gray-400);
+        }
+
+        .request-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-2);
+            color: var(--gray-900);
+        }
+
+        .request-description {
+            color: var(--gray-600);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-4);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .request-meta {
+            display: flex;
+            gap: var(--spacing-4);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-4);
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .request-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+
+        .request-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-4);
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .request-budget {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .request-budget .value {
+            color: var(--secondary-600);
+            font-size: var(--font-size-lg);
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            padding: var(--spacing-2) var(--spacing-6);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16);
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .empty-state h3 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .empty-state p {
+            color: var(--gray-500);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--gray-500);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .modal-header {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: var(--spacing-6);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-4) var(--spacing-6);
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            gap: var(--spacing-3);
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: var(--spacing-4);
+            }
+
+            .page-content {
+                padding: var(--spacing-4);
+            }
+
+            .filters-bar {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/provider/dashboard.html" class="back-link">← Tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>Annonces disponibles</h1>
+                <p>Trouvez des missions qui correspondent à vos compétences</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <span class="filter-label">Catégorie</span>
+                    <select id="filter-category" class="filter-select">
+                        <option value="">Toutes les catégories</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Quartier</span>
+                    <select id="filter-quartier" class="filter-select">
+                        <option value="">Tous les quartiers</option>
+                        <option value="Cocody - Riviera">Cocody - Riviera</option>
+                        <option value="Cocody - Angré">Cocody - Angré</option>
+                        <option value="Cocody - Deux Plateaux">Cocody - Deux Plateaux</option>
+                        <option value="Marcory - Zone 4">Marcory - Zone 4</option>
+                        <option value="Yopougon - Maroc">Yopougon - Maroc</option>
+                        <option value="Yopougon - Sicogi">Yopougon - Sicogi</option>
+                        <option value="Plateau">Plateau</option>
+                        <option value="Treichville">Treichville</option>
+                        <option value="Koumassi">Koumassi</option>
+                    </select>
+                </div>
+
+                <div class="filter-group search-group">
+                    <span class="filter-label">Recherche</span>
+                    <input type="text" id="filter-search" class="search-input" placeholder="Mot-clé...">
+                </div>
+
+                <button id="btn-search" class="btn-filter">🔍 Rechercher</button>
+                <button id="btn-reset" class="btn-reset">Réinitialiser</button>
+            </div>
+
+            <!-- Results -->
+            <div class="results-header">
+                <span class="results-count" id="results-count">Chargement...</span>
+            </div>
+
+            <div class="requests-grid" id="requests-grid">
+                <div class="loading">⏳ Chargement des annonces...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Modal -->
+    <div class="modal-overlay" id="apply-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📨 Postuler à cette annonce</h3>
+            </div>
+            <div class="modal-body">
+                <div id="modal-alert"></div>
+                <input type="hidden" id="apply-request-id">
+                <div class="form-group">
+                    <label class="form-label" for="apply-message">Votre message</label>
+                    <textarea id="apply-message" class="form-input" rows="4"
+                        placeholder="Présentez-vous et expliquez pourquoi vous êtes le bon prestataire..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="apply-price">Tarif proposé (FCFA)</label>
+                    <input type="number" id="apply-price" class="form-input" placeholder="Ex: 15000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="apply-days">Délai proposé (jours)</label>
+                    <input type="number" id="apply-days" class="form-input" placeholder="Ex: 2">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeApplyModal()">Annuler</button>
+                <button class="btn btn-primary" id="submit-apply-btn" onclick="submitApplication()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Require provider role
+        if (!AuthGuard.requireRole('PRESTATAIRE', 'ADMIN')) {
+            // Redirect
+        }
+
+        // Load categories for filter
+        async function loadCategories() {
+            try {
+                const response = await CategoryService.getAll();
+                if (response.success && response.data) {
+                    const select = document.getElementById('filter-category');
+                    response.data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.id;
+                        option.textContent = `${cat.icone || ''} ${cat.nom}`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Load requests
+        async function loadRequests(categoryId, quartier, keyword) {
+            const grid = document.getElementById('requests-grid');
+            grid.innerHTML = '<div class="loading">⏳ Chargement...</div>';
+
+            try {
+                let response;
+                if (keyword) {
+                    response = await ApiClient.get(`/requests/search?q=${encodeURIComponent(keyword)}`);
+                } else {
+                    let url = '/requests?';
+                    if (categoryId) url += `categoryId=${categoryId}&`;
+                    if (quartier) url += `quartier=${encodeURIComponent(quartier)}`;
+                    response = await ApiClient.get(url);
+                }
+
+                if (response.success) {
+                    const requests = response.data || [];
+                    document.getElementById('results-count').textContent = `${requests.length} annonce(s) trouvée(s)`;
+
+                    if (requests.length === 0) {
+                        grid.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <h3>Aucune annonce disponible</h3>
+                                <p>Revenez plus tard ou modifiez vos filtres</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    grid.innerHTML = requests.map(req => renderRequestCard(req)).join('');
+                }
+            } catch (error) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message || 'Impossible de charger les annonces'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render a request card
+        function renderRequestCard(req) {
+            const urgencyBadge = getUrgencyBadge(req.urgence);
+            const timeAgo = formatTimeAgo(req.createdAt);
+            const budget = formatBudget(req.budgetMin, req.budgetMax);
+
+            return `
+                <div class="request-card" data-id="${req.id}">
+                    <div class="request-header">
+                        <div class="request-badges">
+                            <span class="badge badge-category">${req.categoryIcone || '📦'} ${req.categoryNom}</span>
+                            ${urgencyBadge}
+                        </div>
+                        <span class="request-time">${timeAgo}</span>
+                    </div>
+                    <h3 class="request-title">${escapeHtml(req.titre)}</h3>
+                    <p class="request-description">${escapeHtml(req.description)}</p>
+                    <div class="request-meta">
+                        <span>📍 ${escapeHtml(req.quartier)}</span>
+                        ${req.datePrestation ? `<span>📅 ${formatDate(req.datePrestation)}</span>` : ''}
+                        <span>👤 ${escapeHtml(req.clientNom)}</span>
+                        <span>📨 ${req.nombreCandidatures} candidature(s)</span>
+                    </div>
+                    <div class="request-footer">
+                        <div class="request-budget">
+                            ${budget ? `<span class="value">${budget}</span> FCFA` : '<span class="text-muted">Budget non précisé</span>'}
+                        </div>
+                        <button class="btn-apply" onclick="applyToRequest(${req.id})">Postuler</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getUrgencyBadge(urgence) {
+            switch (urgence) {
+                case 'TRES_URGENT':
+                    return '<span class="badge badge-tres-urgent">🔥 Très urgent</span>';
+                case 'URGENT':
+                    return '<span class="badge badge-urgent">⚡ Urgent</span>';
+                default:
+                    return '';
+            }
+        }
+
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 60) return `Il y a ${diffMins} min`;
+            if (diffHours < 24) return `Il y a ${diffHours}h`;
+            if (diffDays < 7) return `Il y a ${diffDays}j`;
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        function formatBudget(min, max) {
+            if (!min && !max) return null;
+            if (min && max) return `${formatNumber(min)} - ${formatNumber(max)}`;
+            if (min) return `À partir de ${formatNumber(min)}`;
+            return `Jusqu'à ${formatNumber(max)}`;
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('fr-FR').format(num);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function applyToRequest(id) {
+            // TODO: Implement application modal
+            alert('Fonctionnalité de candidature à venir dans Phase 3 !');
+        }
+
+        // Event listeners
+        document.getElementById('btn-search').addEventListener('click', () => {
+            const categoryId = document.getElementById('filter-category').value || null;
+            const quartier = document.getElementById('filter-quartier').value || null;
+            const keyword = document.getElementById('filter-search').value.trim() || null;
+            loadRequests(categoryId, quartier, keyword);
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-quartier').value = '';
+            document.getElementById('filter-search').value = '';
+            loadRequests(null, null, null);
+        });
+
+        document.getElementById('filter-search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('btn-search').click();
+            }
+        });
+
+        // Initialize
+        loadCategories();
+        loadRequests(null, null, null);
+    </script>
+</body>
+
+</html>

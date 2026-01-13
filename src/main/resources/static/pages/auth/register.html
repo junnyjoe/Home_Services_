@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inscription à Home Services - Rejoignez la plateforme de services à Abidjan">
+    <title>Inscription | Home Services</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-center mb-2">Créer un compte</h2>
+            <p class="text-center text-muted mb-6">Rejoignez la communauté Home Services</p>
+
+            <!-- Alert Container -->
+            <div id="alert-container"></div>
+
+            <!-- Register Form -->
+            <form id="register-form">
+                <!-- Role Selection -->
+                <div class="form-group">
+                    <label class="form-label">Je suis un(e)</label>
+                    <div class="role-selector">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="CLIENT" checked>
+                            <div class="role-card">
+                                <span class="role-icon">👤</span>
+                                <span class="role-label">Client</span>
+                                <span class="role-desc">Je cherche des services</span>
+                            </div>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="PRESTATAIRE">
+                            <div class="role-card">
+                                <span class="role-icon">🔧</span>
+                                <span class="role-label">Prestataire</span>
+                                <span class="role-desc">Je propose des services</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label" for="nom">Nom complet</label>
+                    <div class="input-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="nom" name="nom" class="form-input" placeholder="Votre nom complet"
+                            required autocomplete="name">
+                    </div>
+                    <span class="form-error"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="email">Adresse email</label>
+                    <div class="input-group">
+                        <span class="input-icon">✉️</span>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="votre@email.com"
+                            required autocomplete="email">
+                    </div>
+                    <span class="form-error"></span>
+                </div>
+
+                <!-- Phone (optional) -->
+                <div class="form-group">
+                    <label class="form-label" for="telephone">Téléphone <span
+                            class="text-muted">(optionnel)</span></label>
+                    <div class="input-group">
+                        <span class="input-icon">📱</span>
+                        <input type="tel" id="telephone" name="telephone" class="form-input"
+                            placeholder="+225 07 00 00 00 00" autocomplete="tel">
+                    </div>
+                    <span class="form-hint">Format: +225 XX XX XX XX XX</span>
+                    <span class="form-error"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="Minimum 6 caractères" required autocomplete="new-password">
+                        <button type="button" class="input-toggle"
+                            onclick="UI.togglePasswordVisibility('password', this)">👁️</button>
+                    </div>
+                    <span class="form-error"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input"
+                            placeholder="Répétez le mot de passe" required autocomplete="new-password">
+                        <button type="button" class="input-toggle"
+                            onclick="UI.togglePasswordVisibility('confirmPassword', this)">👁️</button>
+                    </div>
+                    <span class="form-error"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block btn-lg mt-6">
+                    Créer mon compte
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>
+                    Déjà inscrit ?
+                    <a href="/pages/auth/login.html">Se connecter</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/api.js"></script>
+    <script>
+        // Redirect if already authenticated
+        if (AuthGuard.redirectIfAuthenticated()) {
+            // Will redirect
+        }
+
+        // Handle form submission
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Clear previous errors
+            UI.clearAlerts('#alert-container');
+            UI.clearFieldErrors(form);
+
+            // Validate
+            let hasErrors = false;
+
+            if (!Validators.required(nom)) {
+                UI.showFieldError(document.getElementById('nom'), 'Le nom est obligatoire');
+                hasErrors = true;
+            } else if (!Validators.minLength(nom, 2)) {
+                UI.showFieldError(document.getElementById('nom'), 'Le nom doit contenir au moins 2 caractères');
+                hasErrors = true;
+            }
+
+            if (!Validators.required(email)) {
+                UI.showFieldError(document.getElementById('email'), 'L\'email est obligatoire');
+                hasErrors = true;
+            } else if (!Validators.email(email)) {
+                UI.showFieldError(document.getElementById('email'), 'Format email invalide');
+                hasErrors = true;
+            }
+
+            if (telephone && !Validators.phone(telephone)) {
+                UI.showFieldError(document.getElementById('telephone'), 'Format de téléphone invalide');
+                hasErrors = true;
+            }
+
+            if (!Validators.required(password)) {
+                UI.showFieldError(document.getElementById('password'), 'Le mot de passe est obligatoire');
+                hasErrors = true;
+            } else if (!Validators.minLength(password, 6)) {
+                UI.showFieldError(document.getElementById('password'), 'Le mot de passe doit contenir au moins 6 caractères');
+                hasErrors = true;
+            }
+
+            if (password !== confirmPassword) {
+                UI.showFieldError(document.getElementById('confirmPassword'), 'Les mots de passe ne correspondent pas');
+                hasErrors = true;
+            }
+
+            if (hasErrors) return;
+
+            // Submit
+            UI.setLoading(submitBtn, true);
+
+            try {
+                const userData = {
+                    nom,
+                    email,
+                    password,
+                    role,
+                    ...(telephone && { telephone })
+                };
+
+                const response = await AuthService.register(userData);
+
+                if (response.success) {
+                    UI.showAlert('#alert-container', 'Compte créé avec succès ! Redirection...', 'success');
+                    setTimeout(() => {
+                        AuthService.redirectBasedOnRole();
+                    }, 1500);
+                }
+            } catch (error) {
+                let errorMessage = error.message || 'Une erreur est survenue';
+
+                // Handle validation errors from backend
+                if (error.data && typeof error.data === 'object') {
+                    const firstError = Object.values(error.data)[0];
+                    if (firstError) errorMessage = firstError;
+                }
+
+                UI.showAlert('#alert-container', errorMessage, 'error');
+            } finally {
+                UI.setLoading(submitBtn, false);
+            }
+        });
+    </script>
+</body>
+
+</html>

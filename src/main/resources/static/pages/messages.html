@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .chat-sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-4) var(--spacing-6);
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: var(--font-size-lg);
+        }
+
+        .back-link {
+            color: var(--primary-500);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+        }
+
+        .conversations-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conversation-item {
+            display: flex;
+            gap: var(--spacing-3);
+            padding: var(--spacing-4) var(--spacing-6);
+            cursor: pointer;
+            border-bottom: 1px solid var(--gray-50);
+            transition: background var(--transition-fast);
+        }
+
+        .conversation-item:hover {
+            background: var(--gray-50);
+        }
+
+        .conversation-item.active {
+            background: var(--primary-50);
+            border-left: 3px solid var(--primary-500);
+        }
+
+        .conversation-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conversation-role {
+            font-size: var(--font-size-xs);
+            color: var(--gray-400);
+        }
+
+        .conversation-preview {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-time {
+            font-size: var(--font-size-xs);
+            color: var(--gray-400);
+        }
+
+        .unread-badge {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-500);
+            border-radius: 50%;
+            margin-left: var(--spacing-2);
+        }
+
+        /* Chat Main */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-secondary);
+        }
+
+        .chat-header {
+            padding: var(--spacing-4) var(--spacing-6);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .chat-user-info h3 {
+            margin: 0;
+        }
+
+        .chat-user-info p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .chat-phone {
+            background: var(--success-50);
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-lg);
+            color: var(--success-700);
+            font-weight: 500;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+        }
+
+        .message {
+            max-width: 70%;
+            padding: var(--spacing-3) var(--spacing-4);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+        }
+
+        .message-sent {
+            align-self: flex-end;
+            background: var(--primary-500);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-received {
+            align-self: flex-start;
+            background: white;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message-time {
+            font-size: var(--font-size-xs);
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .message-sent .message-time {
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: var(--spacing-4) var(--spacing-6);
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: var(--spacing-3) var(--spacing-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            resize: none;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+        }
+
+        .btn-send {
+            background: var(--primary-500);
+            color: white;
+            border: none;
+            padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-send:hover {
+            background: var(--primary-600);
+        }
+
+        .empty-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+        }
+
+        .empty-chat-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                width: 100%;
+                position: absolute;
+                z-index: 10;
+                transition: transform var(--transition-base);
+            }
+
+            .chat-sidebar.hidden {
+                transform: translateX(-100%);
+            }
+
+            .chat-main {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <aside class="chat-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>💬 Messages</h2>
+                <a href="javascript:history.back()" class="back-link">← Retour</a>
+            </div>
+            <div class="conversations-list" id="conversations-list">
+                <div style="padding: var(--spacing-8); text-align: center; color: var(--gray-400)">
+                    Chargement...
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <main class="chat-main" id="chat-main">
+            <div class="empty-chat" id="empty-chat">
+                <div class="empty-chat-icon">💬</div>
+                <p>Sélectionnez une conversation</p>
+            </div>
+            <div id="active-chat" style="display: none; flex-direction: column; height: 100%;">
+                <header class="chat-header">
+                    <div class="chat-user-info">
+                        <div>
+                            <h3 id="chat-user-name">...</h3>
+                            <p id="chat-request-title">...</p>
+                        </div>
+                    </div>
+                    <div class="chat-phone" id="chat-phone">📞 ...</div>
+                </header>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <textarea class="chat-input" id="chat-input" rows="1" placeholder="Votre message..."></textarea>
+                    <button class="btn-send" id="btn-send">Envoyer</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireAuth()) { /* redirect */ }
+
+        let currentApplicationId = null;
+        let conversations = [];
+
+        async function loadConversations() {
+            try {
+                const response = await ApiClient.get('/messages/conversations');
+                if (response.success) {
+                    conversations = response.data || [];
+                    renderConversations();
+                }
+            } catch (error) {
+                document.getElementById('conversations-list').innerHTML = `
+                    <div style="padding: var(--spacing-8); text-align: center; color: var(--gray-400)">
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderConversations() {
+            const list = document.getElementById('conversations-list');
+            if (conversations.length === 0) {
+                list.innerHTML = `
+                    <div style="padding: var(--spacing-8); text-align: center; color: var(--gray-400)">
+                        <div style="font-size: 3rem; margin-bottom: var(--spacing-4)">📭</div>
+                        <p>Aucune conversation</p>
+                        <p style="font-size: var(--font-size-sm)">Les conversations apparaîtront après acceptation d'une candidature</p>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = conversations.map(conv => `
+                <div class="conversation-item ${currentApplicationId === conv.applicationId ? 'active' : ''}" 
+                     onclick="openConversation(${conv.applicationId})">
+                    <div class="conversation-avatar">${conv.otherUserRole === 'Client' ? '👤' : '🔧'}</div>
+                    <div class="conversation-info">
+                        <div class="conversation-name">
+                            <span>${escapeHtml(conv.otherUserNom)}</span>
+                            ${conv.hasUnread ? '<span class="unread-badge"></span>' : ''}
+                        </div>
+                        <div class="conversation-role">${conv.otherUserRole} • ${escapeHtml(conv.requestTitre)}</div>
+                        <div class="conversation-preview">${conv.lastMessage ? escapeHtml(conv.lastMessage) : 'Pas encore de message'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function openConversation(applicationId) {
+            currentApplicationId = applicationId;
+            const conv = conversations.find(c => c.applicationId === applicationId);
+            if (!conv) return;
+
+            // Update UI
+            document.getElementById('empty-chat').style.display = 'none';
+            document.getElementById('active-chat').style.display = 'flex';
+            document.getElementById('chat-user-name').textContent = conv.otherUserNom;
+            document.getElementById('chat-request-title').textContent = conv.requestTitre;
+            document.getElementById('chat-phone').textContent = '📞 ' + (conv.otherUserPhone || 'Non disponible');
+
+            renderConversations(); // Update active state
+
+            // Load messages
+            try {
+                const response = await ApiClient.get(`/messages/conversation/${applicationId}`);
+                if (response.success) {
+                    renderMessages(response.data || []);
+                }
+            } catch (error) {
+                document.getElementById('chat-messages').innerHTML = `<p style="color: var(--error-500)">${error.message}</p>`;
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chat-messages');
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--gray-400); padding: var(--spacing-8)">
+                        <p>Commencez la conversation !</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = messages.map(msg => `
+                <div class="message ${msg.isOwnMessage ? 'message-sent' : 'message-received'}">
+                    <div>${escapeHtml(msg.content)}</div>
+                    <div class="message-time">${formatTime(msg.createdAt)}</div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const content = input.value.trim();
+            if (!content || !currentApplicationId) return;
+
+            try {
+                const response = await ApiClient.post('/messages', {
+                    applicationId: currentApplicationId,
+                    content
+                });
+                if (response.success) {
+                    input.value = '';
+                    openConversation(currentApplicationId); // Reload messages
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('btn-send').addEventListener('click', sendMessage);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Check URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('app');
+
+        // Initialize
+        loadConversations().then(() => {
+            if (appId) {
+                openConversation(parseInt(appId));
+            }
+        });
+
+        // Poll for new messages every 10 seconds
+        setInterval(() => {
+            if (currentApplicationId) {
+                openConversation(currentApplicationId);
+            }
+            loadConversations();
+        }, 10000);
+    </script>
+</body>
+
+</html>

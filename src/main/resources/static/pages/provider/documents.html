@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes documents | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .back-link {
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title h1 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .page-title p {
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .info-box {
+            background: var(--primary-50);
+            border-left: 4px solid var(--primary-500);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .info-box h4 {
+            margin: 0 0 var(--spacing-2);
+            color: var(--primary-700);
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .upload-section h3 {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .upload-card {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            transition: all var(--transition-fast);
+        }
+
+        .upload-card:hover {
+            border-color: var(--primary-400);
+            background: var(--gray-50);
+        }
+
+        .upload-card.has-file {
+            border-color: var(--success-500);
+            border-style: solid;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .upload-label {
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .upload-hint {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .btn-upload {
+            background: var(--primary-500);
+            color: white;
+            border: none;
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-600);
+        }
+
+        .documents-list {
+            margin-top: var(--spacing-6);
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-4);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .document-icon {
+            font-size: 1.5rem;
+        }
+
+        .document-name {
+            font-weight: 500;
+        }
+
+        .document-meta {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .status-badge {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .status-en-attente {
+            background: var(--warning-50);
+            color: var(--warning-600);
+        }
+
+        .status-valide {
+            background: var(--success-50);
+            color: var(--success-600);
+        }
+
+        .status-refuse {
+            background: var(--error-50);
+            color: var(--error-600);
+        }
+
+        @media (max-width: 768px) {
+
+            .page-header,
+            .page-content {
+                padding: var(--spacing-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/provider/dashboard.html" class="back-link">← Tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>📄 Mes documents</h1>
+                <p>Uploadez vos documents pour vérifier votre profil</p>
+            </div>
+
+            <div class="info-box">
+                <h4>📋 Documents requis pour la vérification</h4>
+                <p>Pour être vérifié et apparaître en priorité, vous devez fournir au minimum une pièce d'identité et un
+                    justificatif de compétence.</p>
+            </div>
+
+            <div class="upload-section">
+                <h3>Ajouter un document</h3>
+                <div class="upload-grid">
+                    <div class="upload-card" id="card-cni">
+                        <div class="upload-icon">🪪</div>
+                        <div class="upload-label">Carte d'identité</div>
+                        <div class="upload-hint">CNI, passeport ou permis</div>
+                        <input type="file" id="file-cni" class="upload-input" accept="image/*,.pdf">
+                        <button class="btn-upload" onclick="document.getElementById('file-cni').click()">Choisir un
+                            fichier</button>
+                    </div>
+                    <div class="upload-card" id="card-attestation">
+                        <div class="upload-icon">📜</div>
+                        <div class="upload-label">Attestation de compétence</div>
+                        <div class="upload-hint">Certificat, diplôme ou attestation</div>
+                        <input type="file" id="file-attestation" class="upload-input" accept="image/*,.pdf">
+                        <button class="btn-upload" onclick="document.getElementById('file-attestation').click()">Choisir
+                            un fichier</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-section documents-list">
+                <h3>Documents uploadés</h3>
+                <div id="documents-container">
+                    <p style="color: var(--gray-400); text-align: center;">Chargement...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireRole('PRESTATAIRE')) { /* redirect */ }
+
+        async function loadDocuments() {
+            try {
+                const response = await ApiClient.get('/documents/my');
+                if (response.success) {
+                    renderDocuments(response.data || []);
+                }
+            } catch (error) {
+                document.getElementById('documents-container').innerHTML = `
+                    <p style="color: var(--error-500); text-align: center;">${error.message}</p>
+                `;
+            }
+        }
+
+        function renderDocuments(docs) {
+            const container = document.getElementById('documents-container');
+            if (docs.length === 0) {
+                container.innerHTML = `
+                    <p style="color: var(--gray-400); text-align: center;">Aucun document uploadé</p>
+                `;
+                return;
+            }
+            container.innerHTML = docs.map(doc => `
+                <div class="document-item">
+                    <div class="document-info">
+                        <span class="document-icon">${getDocTypeIcon(doc.type)}</span>
+                        <div>
+                            <div class="document-name">${doc.typeLabel}</div>
+                            <div class="document-meta">${doc.filename} • ${formatDate(doc.createdAt)}</div>
+                            ${doc.motifRefus ? `<div style="color: var(--error-500); font-size: var(--font-size-sm);">Motif: ${escapeHtml(doc.motifRefus)}</div>` : ''}
+                        </div>
+                    </div>
+                    <span class="status-badge status-${doc.statut.toLowerCase().replace('_', '-')}">${doc.statutLabel}</span>
+                </div>
+            `).join('');
+        }
+
+        function getDocTypeIcon(type) {
+            const icons = { CNI: '🪪', ATTESTATION: '📜', DIPLOME: '🎓', AUTRE: '📄' };
+            return icons[type] || '📄';
+        }
+
+        async function uploadFile(file, type) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', type);
+
+            try {
+                const response = await fetch('/api/documents/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` },
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Document uploadé avec succès !');
+                    loadDocuments();
+                } else {
+                    alert(data.message || 'Erreur lors de l\'upload');
+                }
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        }
+
+        // File input handlers
+        document.getElementById('file-cni').addEventListener('change', (e) => {
+            if (e.target.files[0]) uploadFile(e.target.files[0], 'CNI');
+        });
+        document.getElementById('file-attestation').addEventListener('change', (e) => {
+            if (e.target.files[0]) uploadFile(e.target.files[0], 'ATTESTATION');
+        });
+
+        function formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('fr-FR'); }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        loadDocuments();
+    </script>
+</body>
+
+</html>

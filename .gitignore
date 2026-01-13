@@ -1,24 +1,32 @@
-/.mvn
-/.idea
-/target
-/.classpath
-/.project
-/.settings
+# Build artifacts
+/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.war
+
+# IDE
+/.idea/
+/.vscode/
 *.iml
+.classpath
+.project
+.settings/
+
+# Logs
 *.log
-node_modules
-/.vscode
+logs/
 
-# Ignore Chocolatey scratch artifacts (large)
-hoco/ChocolateyScratch/
-
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
 
-# IDE folders
-.idea/
-.vscode/
+# Node (if any frontend build)
+node_modules/
 
-# Maven build
-/target/
+# Environment files
+.env
+.env.local
+
+# Temporary files
+compile_result.txt

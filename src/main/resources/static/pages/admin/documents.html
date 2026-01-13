@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation documents | Admin | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .back-link {
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .page-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .page-title h1 {
+            margin: 0;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .stat-card {
+            flex: 1;
+            background: white;
+            padding: var(--spacing-4);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--primary-600);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .documents-list {
+            display: grid;
+            gap: var(--spacing-4);
+        }
+
+        .document-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .provider-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .provider-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .provider-name {
+            font-weight: 600;
+        }
+
+        .provider-meta {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .document-type {
+            padding: var(--spacing-2) var(--spacing-4);
+            background: var(--gray-100);
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+        }
+
+        .document-preview {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+            text-align: center;
+        }
+
+        .document-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: var(--radius-md);
+        }
+
+        .document-preview a {
+            color: var(--primary-500);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16);
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        @media (max-width: 768px) {
+
+            .page-header,
+            .page-content {
+                padding: var(--spacing-4);
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/admin/dashboard.html" class="back-link">← Tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>📋 Validation des documents</h1>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-value" id="pending-count">-</div>
+                    <div class="stat-label">En attente</div>
+                </div>
+            </div>
+
+            <div class="documents-list" id="documents-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">⏳</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireRole('ADMIN')) { /* redirect */ }
+
+        async function loadPendingDocuments() {
+            try {
+                const response = await ApiClient.get('/documents/pending');
+                if (response.success) {
+                    const docs = response.data || [];
+                    document.getElementById('pending-count').textContent = docs.length;
+                    renderDocuments(docs);
+                }
+            } catch (error) {
+                document.getElementById('documents-list').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erreur</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderDocuments(docs) {
+            const list = document.getElementById('documents-list');
+            if (docs.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <h3>Aucun document en attente</h3>
+                        <p>Tous les documents ont été traités</p>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = docs.map(doc => `
+                <div class="document-card" id="doc-${doc.id}">
+                    <div class="document-header">
+                        <div class="provider-info">
+                            <div class="provider-avatar">👤</div>
+                            <div>
+                                <div class="provider-name">${escapeHtml(doc.providerNom)}</div>
+                                <div class="provider-meta">Uploadé le ${formatDate(doc.createdAt)}</div>
+                            </div>
+                        </div>
+                        <span class="document-type">${getDocTypeIcon(doc.type)} ${doc.typeLabel}</span>
+                    </div>
+                    <div class="document-preview">
+                        <a href="${doc.url}" target="_blank">📄 Voir le document: ${escapeHtml(doc.filename)}</a>
+                    </div>
+                    <div class="document-actions">
+                        <button class="btn btn-primary" onclick="validateDoc(${doc.id})">✓ Valider</button>
+                        <button class="btn btn-secondary" onclick="rejectDoc(${doc.id})">✗ Refuser</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getDocTypeIcon(type) {
+            const icons = { CNI: '🪪', ATTESTATION: '📜', DIPLOME: '🎓', AUTRE: '📄' };
+            return icons[type] || '📄';
+        }
+
+        async function validateDoc(id) {
+            if (!confirm('Valider ce document ?')) return;
+            try {
+                await ApiClient.post(`/documents/${id}/validate`, {});
+                loadPendingDocuments();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function rejectDoc(id) {
+            const motif = prompt('Motif du refus:');
+            if (motif === null) return;
+            try {
+                await ApiClient.post(`/documents/${id}/reject`, { motif });
+                loadPendingDocuments();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('fr-FR'); }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        loadPendingDocuments();
+    </script>
+</body>
+
+</html>

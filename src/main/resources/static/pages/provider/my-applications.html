@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes candidatures | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-header .logo-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link {
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .page-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .page-title h1 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .page-title p {
+            color: var(--gray-600);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-6);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .tab {
+            padding: var(--spacing-3) var(--spacing-4);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--gray-500);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all var(--transition-fast);
+        }
+
+        .tab.active {
+            color: var(--secondary-600);
+            border-bottom-color: var(--secondary-500);
+        }
+
+        .tab:hover {
+            color: var(--gray-800);
+        }
+
+        .applications-list {
+            display: grid;
+            gap: var(--spacing-4);
+        }
+
+        .application-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .application-status {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .status-en-attente {
+            background: var(--warning-50);
+            color: var(--warning-600);
+        }
+
+        .status-acceptee {
+            background: var(--success-50);
+            color: var(--success-600);
+        }
+
+        .status-refusee {
+            background: var(--error-50);
+            color: var(--error-600);
+        }
+
+        .status-retiree {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .application-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .application-meta {
+            display: flex;
+            gap: var(--spacing-4);
+            flex-wrap: wrap;
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .application-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+
+        .application-proposal {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .proposal-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .proposal-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .proposal-label {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .proposal-value {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .application-response {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .response-label {
+            font-size: var(--font-size-sm);
+            color: var(--primary-600);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .contact-info {
+            background: var(--success-50);
+            border: 1px solid var(--success-500);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .contact-label {
+            font-size: var(--font-size-sm);
+            color: var(--success-600);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .contact-phone {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--success-700);
+        }
+
+        .application-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16);
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .empty-state h3 {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .empty-state p {
+            color: var(--gray-500);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: var(--spacing-4);
+            }
+
+            .page-content {
+                padding: var(--spacing-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/provider/dashboard.html" class="back-link">← Tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>Mes candidatures</h1>
+                <p>Suivez l'état de vos candidatures</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-filter="all">Toutes</button>
+                <button class="tab" data-filter="EN_ATTENTE">En attente</button>
+                <button class="tab" data-filter="ACCEPTEE">Acceptées</button>
+                <button class="tab" data-filter="REFUSEE">Refusées</button>
+            </div>
+
+            <div class="applications-list" id="applications-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">⏳</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireRole('PRESTATAIRE')) { /* redirect */ }
+
+        let allApplications = [];
+        let currentFilter = 'all';
+
+        async function loadApplications() {
+            try {
+                const response = await ApiClient.get('/applications/my');
+                if (response.success) {
+                    allApplications = response.data || [];
+                    renderApplications();
+                }
+            } catch (error) {
+                document.getElementById('applications-list').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erreur</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderApplications() {
+            const list = document.getElementById('applications-list');
+            let filtered = allApplications;
+            if (currentFilter !== 'all') {
+                filtered = allApplications.filter(a => a.statut === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>Aucune candidature</h3>
+                        <p>Postulez aux annonces pour voir vos candidatures ici</p>
+                        <a href="/pages/provider/requests.html" class="btn btn-primary mt-4">Voir les annonces</a>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(app => renderApplicationCard(app)).join('');
+        }
+
+        function renderApplicationCard(app) {
+            const statusClass = `status-${app.statut.toLowerCase().replace('_', '-')}`;
+            const statusLabel = getStatusLabel(app.statut);
+            const timeAgo = formatTimeAgo(app.createdAt);
+
+            let contactHtml = '';
+            if (app.statut === 'ACCEPTEE' && app.providerTelephone) {
+                contactHtml = `
+                    <div class="contact-info">
+                        <div class="contact-label">📞 Coordonnées du client</div>
+                        <div class="contact-phone">${app.providerTelephone || 'Non disponible'}</div>
+                    </div>
+                `;
+            }
+
+            let responseHtml = '';
+            if (app.clientResponse) {
+                responseHtml = `
+                    <div class="application-response">
+                        <div class="response-label">💬 Réponse du client</div>
+                        <p>${escapeHtml(app.clientResponse)}</p>
+                    </div>
+                `;
+            }
+
+            let actionsHtml = '';
+            if (app.statut === 'EN_ATTENTE') {
+                actionsHtml = `
+                    <div class="application-actions">
+                        <button class="btn btn-secondary" onclick="withdrawApplication(${app.id})">Retirer ma candidature</button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="application-card">
+                    <div class="application-header">
+                        <span class="application-status ${statusClass}">${statusLabel}</span>
+                        <span style="color: var(--gray-400); font-size: var(--font-size-xs)">${timeAgo}</span>
+                    </div>
+                    <h3 class="application-title">${escapeHtml(app.serviceRequestTitre)}</h3>
+                    <div class="application-meta">
+                        <span>📍 ${escapeHtml(app.serviceRequestQuartier)}</span>
+                    </div>
+                    <div class="application-proposal">
+                        <div class="proposal-row">
+                            <span class="proposal-label">Tarif proposé</span>
+                            <span class="proposal-value">${app.proposedPrice ? formatNumber(app.proposedPrice) + ' FCFA' : 'Non spécifié'}</span>
+                        </div>
+                        <div class="proposal-row">
+                            <span class="proposal-label">Délai proposé</span>
+                            <span class="proposal-value">${app.proposedDays ? app.proposedDays + ' jour(s)' : 'Non spécifié'}</span>
+                        </div>
+                    </div>
+                    ${app.message ? `<p style="color: var(--gray-600); font-size: var(--font-size-sm); margin-bottom: var(--spacing-4);">"${escapeHtml(app.message)}"</p>` : ''}
+                    ${contactHtml}
+                    ${responseHtml}
+                    ${actionsHtml}
+                </div>
+            `;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'EN_ATTENTE': '⏳ En attente',
+                'ACCEPTEE': '✅ Acceptée',
+                'REFUSEE': '❌ Refusée',
+                'RETIREE': '↩️ Retirée'
+            };
+            return labels[status] || status;
+        }
+
+        async function withdrawApplication(id) {
+            if (!confirm('Voulez-vous vraiment retirer cette candidature ?')) return;
+            try {
+                await ApiClient.delete(`/applications/${id}`);
+                loadApplications();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const diffMins = Math.floor((new Date() - date) / 60000);
+            if (diffMins < 60) return `Il y a ${diffMins} min`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `Il y a ${diffHours}h`;
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        function formatNumber(num) { return new Intl.NumberFormat('fr-FR').format(num); }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                renderApplications();
+            });
+        });
+
+        loadApplications();
+    </script>
+</body>
+
+</html>

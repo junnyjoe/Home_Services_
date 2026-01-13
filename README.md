@@ -1,74 +1,158 @@
-# Abidjan Prices — Application de comparaison des prix agricoles
+# Home Services - Marketplace Abidjan
 
-Prototype minimal pour collecte, comparaison et visualisation des prix agricoles à Abidjan.
+Une plateforme de mise en relation entre clients et prestataires de services à domicile à Abidjan.
 
-Run (dev):
+## 🚀 Fonctionnalités
 
-1. En développement rapide sans PostgreSQL : lancer l'application avec le profil `dev` (H2 en mémoire, Flyway désactivé) :
+- **Authentification** : Inscription/Connexion avec JWT
+- **Annonces** : Clients publient des demandes de services
+- **Candidatures** : Prestataires postulent aux annonces
+- **Messagerie** : Chat entre client et prestataire après acceptation
+- **Évaluations** : Notes et avis après prestation
+- **Documents** : Vérification d'identité des prestataires
 
-```powershell
-# si vous avez Maven
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+## 🛠️ Technologies
 
-# ou (Windows) si vous avez le Maven Wrapper
-#.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
+### Backend
+- Java 17 + Spring Boot 3.x
+- Spring Security + JWT
+- Spring Data JPA + PostgreSQL
+- Flyway (migrations)
+- Maven
+
+### Frontend
+- HTML5 / CSS3 / JavaScript (Vanilla)
+- Design System personnalisé
+- Responsive design
+
+## 📋 Prérequis
+
+- Java 17+
+- Maven 3.8+
+- PostgreSQL 14+ (ou Docker)
+
+## 🏃 Démarrage rapide
+
+### Mode développement (H2)
+
+```bash
+# Cloner le projet
+git clone https://github.com/your-username/home-services.git
+cd home-services
+
+# Lancer avec le profil dev (H2 en mémoire)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-2. Pour utiliser PostgreSQL (production ou persistance réelle) :
+L'application sera accessible sur http://localhost:8080
 
- - Créer la base `abidjan_prices` et définir les variables d'environnement ou mettre à jour `src/main/resources/application.yml` :
+### Avec Docker
 
-```powershell
-# exemple pour créer la DB si psql est disponible
-psql -U postgres -c "CREATE DATABASE abidjan_prices;"
+```bash
+# Copier le fichier d'environnement
+cp .env.example .env
+# Éditer .env avec vos valeurs
+
+# Lancer avec Docker Compose
+docker-compose up -d
+
+# Voir les logs
+docker-compose logs -f app
 ```
 
- - Exemples d'env vars (ou configurez dans `application.yml`):
-	 - `SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/abidjan_prices`
-	 - `SPRING_DATASOURCE_USERNAME=postgres`
-	 - `SPRING_DATASOURCE_PASSWORD=postgres`
+## 🧪 Tests
 
-3. Lancer en mode production (avec Flyway activé) :
+```bash
+# Lancer tous les tests
+./mvnw test
 
-```powershell
-mvn spring-boot:run
-# ou
-.\mvnw.cmd spring-boot:run
+# Lancer les tests d'intégration
+./mvnw test -Dtest=*IntegrationTest
 ```
 
-Frontend: pages statiques dans `src/main/resources/static`.
+## 📁 Structure du projet
 
-Push to GitHub
-----------------
-If you want to publish this repository to GitHub under your account `bellaangemickael2006`, run the following from the project root:
-
-```powershell
-git config --global user.name "bellaangemickael2006"
-git config --global user.email "bellaangemickael2006@gmail.com"
-
-# (optional) remove large Chocolatey scratch files first
-git rm -r --cached hoco/ChocolateyScratch || echo "no hoco folder"
-echo "hoco/ChocolateyScratch/" >> .gitignore
-git add .gitignore
-git commit -m "Remove Chocolatey scratch files from repo" || echo "no changes"
-
-# set remote (replace if needed)
-git remote remove origin 2>$null || echo "no origin to remove"
-git remote add origin https://github.com/bellaangemickael2006/abidjan_prices.git
-
-# authenticate and push
-gh auth login    # follow interactive prompt, choose HTTPS or SSH
-git push -u origin main
+```
+src/
+├── main/
+│   ├── java/com/home/services/
+│   │   ├── config/          # Configuration (Security, JWT)
+│   │   ├── controller/      # REST Controllers
+│   │   ├── dto/             # Data Transfer Objects
+│   │   ├── exception/       # Gestionnaire d'exceptions
+│   │   ├── model/           # Entités JPA
+│   │   ├── repository/      # Repositories JPA
+│   │   └── service/         # Services métier
+│   └── resources/
+│       ├── static/          # Frontend (HTML/CSS/JS)
+│       │   ├── css/
+│       │   ├── js/
+│       │   └── pages/
+│       └── db/migration/    # Scripts Flyway
+└── test/                    # Tests unitaires et d'intégration
 ```
 
-If you prefer SSH, add your SSH key to GitHub and then run:
+## 🔐 Rôles utilisateurs
 
-```powershell
-git remote set-url origin git@github.com:bellaangemickael2006/abidjan_prices.git
-git push -u origin main
+| Rôle | Description |
+|------|-------------|
+| CLIENT | Publie des annonces, sélectionne des prestataires |
+| PRESTATAIRE | Postule aux annonces, effectue les prestations |
+| ADMIN | Valide les documents, gère la plateforme |
+
+## 📡 API Endpoints
+
+### Authentification
+- `POST /api/auth/register` - Inscription
+- `POST /api/auth/login` - Connexion
+
+### Annonces
+- `GET /api/requests` - Liste des annonces publiées
+- `POST /api/requests` - Créer une annonce (CLIENT)
+- `GET /api/requests/my` - Mes annonces
+
+### Candidatures
+- `POST /api/applications` - Postuler (PRESTATAIRE)
+- `POST /api/applications/{id}/accept` - Accepter (CLIENT)
+- `GET /api/applications/my` - Mes candidatures
+
+### Messages
+- `GET /api/messages/conversations` - Liste des conversations
+- `POST /api/messages` - Envoyer un message
+
+### Documents
+- `POST /api/documents/upload` - Upload document (PRESTATAIRE)
+- `POST /api/documents/{id}/validate` - Valider (ADMIN)
+
+## 🌐 Déploiement
+
+### Variables d'environnement
+
+| Variable | Description | Défaut |
+|----------|-------------|--------|
+| `SPRING_PROFILES_ACTIVE` | Profil actif | `dev` |
+| `DB_PASSWORD` | Mot de passe PostgreSQL | - |
+| `JWT_SECRET` | Clé secrète JWT (min 256 bits) | - |
+| `APP_UPLOAD_DIR` | Dossier uploads | `/app/uploads` |
+
+### Docker
+
+```bash
+# Build l'image
+docker build -t home-services .
+
+# Lancer avec docker-compose
+docker-compose up -d
 ```
 
-Notes:
-- Use `.\
-vmw.cmd` on Windows to run the included Maven wrapper after running `.\n+scripts\setup-maven-wrapper.ps1` to download the wrapper jar.
-- If you encounter permission errors (403), ensure you're authenticated with the correct GitHub account (`bellaangemickael2006`).
+## 📄 Licence
+
+MIT License
+
+## 👥 Auteurs
+
+- **Home Services Team**
+
+---
+
+Made with ❤️ in Abidjan 🇨🇮

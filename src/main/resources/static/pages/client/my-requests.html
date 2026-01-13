@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes annonces | Home Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .page-header {
+            background: var(--bg-gradient-cool);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header .logo {
+            margin: 0;
+        }
+
+        .page-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-header .logo-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link {
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .page-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .page-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .page-title h1 {
+            margin: 0;
+        }
+
+        .requests-list {
+            display: grid;
+            gap: var(--spacing-4);
+        }
+
+        .request-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .request-main {
+            padding: var(--spacing-6);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .request-badges {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        .badge {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .badge-category {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .badge-publiee {
+            background: var(--success-50);
+            color: var(--success-600);
+        }
+
+        .badge-en-cours {
+            background: var(--warning-50);
+            color: var(--warning-600);
+        }
+
+        .badge-terminee {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .request-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .request-meta {
+            display: flex;
+            gap: var(--spacing-4);
+            flex-wrap: wrap;
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .request-stats {
+            display: flex;
+            gap: var(--spacing-6);
+            padding: var(--spacing-4) var(--spacing-6);
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            padding: var(--spacing-4) var(--spacing-6);
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-100);
+        }
+
+        /* Applications Panel */
+        .applications-panel {
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-6);
+            background: var(--gray-50);
+            cursor: pointer;
+        }
+
+        .panel-header h4 {
+            margin: 0;
+            font-size: var(--font-size-sm);
+        }
+
+        .panel-toggle {
+            font-size: 1.2rem;
+            transition: transform var(--transition-fast);
+        }
+
+        .panel-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .panel-content {
+            display: none;
+            padding: var(--spacing-4) var(--spacing-6);
+        }
+
+        .panel-content.open {
+            display: block;
+        }
+
+        .applicant-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .applicant-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .applicant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .applicant-name {
+            font-weight: 600;
+        }
+
+        .applicant-rating {
+            color: var(--warning-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .applicant-proposal {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .applicant-message {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            font-style: italic;
+            margin-bottom: var(--spacing-3);
+            padding: var(--spacing-2);
+            background: white;
+            border-radius: var(--radius-md);
+        }
+
+        .applicant-actions {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        .provider-contact {
+            background: var(--success-50);
+            border: 1px solid var(--success-500);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-top: var(--spacing-4);
+        }
+
+        .provider-contact h4 {
+            margin: 0 0 var(--spacing-2);
+            color: var(--success-700);
+        }
+
+        .provider-phone {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--success-600);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16);
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        @media (max-width: 768px) {
+
+            .page-header,
+            .page-content {
+                padding: var(--spacing-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <a href="/pages/client/dashboard.html" class="back-link">← Tableau de bord</a>
+        </header>
+
+        <main class="page-content">
+            <div class="page-title">
+                <h1>Mes annonces</h1>
+                <a href="/pages/client/new-request.html" class="btn btn-primary">+ Nouvelle annonce</a>
+            </div>
+
+            <div class="requests-list" id="requests-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">⏳</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireRole('CLIENT')) { /* redirect */ }
+
+        let requestsData = [];
+
+        async function loadRequests() {
+            try {
+                const response = await ApiClient.get('/requests/my');
+                if (response.success) {
+                    requestsData = response.data || [];
+                    renderRequests();
+                }
+            } catch (error) {
+                document.getElementById('requests-list').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erreur</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderRequests() {
+            const list = document.getElementById('requests-list');
+            if (requestsData.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>Aucune annonce</h3>
+                        <p>Publiez votre première annonce pour trouver un prestataire</p>
+                        <a href="/pages/client/new-request.html" class="btn btn-primary mt-4">Créer une annonce</a>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = requestsData.map(req => renderRequestCard(req)).join('');
+        }
+
+        function renderRequestCard(req) {
+            const statusBadge = getStatusBadge(req.statut);
+            return `
+                <div class="request-card" id="request-${req.id}">
+                    <div class="request-main">
+                        <div class="request-header">
+                            <div class="request-badges">
+                                <span class="badge badge-category">${req.categoryIcone || '📦'} ${req.categoryNom}</span>
+                                ${statusBadge}
+                            </div>
+                            <span style="color: var(--gray-400); font-size: var(--font-size-xs)">${formatDate(req.createdAt)}</span>
+                        </div>
+                        <h3 class="request-title">${escapeHtml(req.titre)}</h3>
+                        <div class="request-meta">
+                            <span>📍 ${escapeHtml(req.quartier)}</span>
+                            ${req.budgetMax ? `<span>💰 ${formatNumber(req.budgetMax)} FCFA</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="request-stats">
+                        <div class="stat">
+                            <div class="stat-value">${req.nombreCandidatures}</div>
+                            <div class="stat-label">Candidatures</div>
+                        </div>
+                    </div>
+                    ${req.statut === 'PUBLIEE' && req.nombreCandidatures > 0 ? `
+                    <div class="applications-panel">
+                        <div class="panel-header" onclick="togglePanel(${req.id})">
+                            <h4>📨 Voir les candidatures (${req.nombreCandidatures})</h4>
+                            <span class="panel-toggle" id="toggle-${req.id}">▼</span>
+                        </div>
+                        <div class="panel-content" id="panel-${req.id}">
+                            <div id="applicants-${req.id}">Chargement...</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${req.statut === 'EN_COURS' ? `
+                    <div class="provider-contact">
+                        <h4>✅ Prestataire sélectionné</h4>
+                        <p><strong>${escapeHtml(req.selectedProviderNom || 'Prestataire')}</strong></p>
+                        <p class="provider-phone">📞 Contactez-le pour finaliser</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function getStatusBadge(statut) {
+            const badges = {
+                'BROUILLON': '<span class="badge" style="background: var(--gray-100); color: var(--gray-600)">📝 Brouillon</span>',
+                'PUBLIEE': '<span class="badge badge-publiee">🟢 Publiée</span>',
+                'EN_COURS': '<span class="badge badge-en-cours">⏳ En cours</span>',
+                'TERMINEE': '<span class="badge badge-terminee">✅ Terminée</span>',
+                'ANNULEE': '<span class="badge" style="background: var(--error-50); color: var(--error-600)">❌ Annulée</span>'
+            };
+            return badges[statut] || '';
+        }
+
+        async function togglePanel(requestId) {
+            const panel = document.getElementById(`panel-${requestId}`);
+            const toggle = document.getElementById(`toggle-${requestId}`);
+            const isOpen = panel.classList.contains('open');
+
+            if (isOpen) {
+                panel.classList.remove('open');
+                toggle.classList.remove('open');
+            } else {
+                panel.classList.add('open');
+                toggle.classList.add('open');
+                loadApplications(requestId);
+            }
+        }
+
+        async function loadApplications(requestId) {
+            const container = document.getElementById(`applicants-${requestId}`);
+            try {
+                const response = await ApiClient.get(`/applications/request/${requestId}`);
+                if (response.success) {
+                    const apps = response.data.filter(a => a.statut === 'EN_ATTENTE');
+                    if (apps.length === 0) {
+                        container.innerHTML = '<p style="color: var(--gray-500)">Aucune candidature en attente</p>';
+                    } else {
+                        container.innerHTML = apps.map(app => renderApplicantCard(app)).join('');
+                    }
+                }
+            } catch (error) {
+                container.innerHTML = `<p style="color: var(--error-500)">${error.message}</p>`;
+            }
+        }
+
+        function renderApplicantCard(app) {
+            return `
+                <div class="applicant-card">
+                    <div class="applicant-header">
+                        <span class="applicant-name">👤 ${escapeHtml(app.providerNom)}</span>
+                        ${app.providerNote ? `<span class="applicant-rating">⭐ ${app.providerNote.toFixed(1)}</span>` : ''}
+                    </div>
+                    <div class="applicant-proposal">
+                        ${app.proposedPrice ? `💰 ${formatNumber(app.proposedPrice)} FCFA` : ''}
+                        ${app.proposedDays ? ` • 📅 ${app.proposedDays} jour(s)` : ''}
+                    </div>
+                    ${app.message ? `<div class="applicant-message">"${escapeHtml(app.message)}"</div>` : ''}
+                    <div class="applicant-actions">
+                        <button class="btn btn-primary" onclick="acceptApplication(${app.id})">✓ Accepter</button>
+                        <button class="btn btn-secondary" onclick="rejectApplication(${app.id})">✗ Refuser</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function acceptApplication(id) {
+            if (!confirm('Accepter cette candidature ? Les autres seront automatiquement refusées.')) return;
+            try {
+                await ApiClient.post(`/applications/${id}/accept`, {});
+                alert('Candidature acceptée ! Vous pouvez maintenant contacter le prestataire.');
+                loadRequests();
+            } catch (error) { alert(error.message); }
+        }
+
+        async function rejectApplication(id) {
+            const reason = prompt('Raison du refus (optionnel):');
+            try {
+                await ApiClient.post(`/applications/${id}/reject`, { reason });
+                const panel = document.querySelector('.panel-content.open');
+                if (panel) {
+                    const requestId = panel.id.replace('panel-', '');
+                    loadApplications(requestId);
+                }
+            } catch (error) { alert(error.message); }
+        }
+
+        function formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('fr-FR'); }
+        function formatNumber(num) { return new Intl.NumberFormat('fr-FR').format(num); }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        loadRequests();
+    </script>
+</body>
+
+</html>

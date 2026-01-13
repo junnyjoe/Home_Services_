@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | Home Services</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .dashboard {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: var(--bg-dark);
+            color: white;
+            padding: var(--spacing-4) var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header .logo {
+            margin: 0;
+        }
+
+        .dashboard-header .logo-text {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .dashboard-header .logo-icon {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .admin-badge {
+            background: var(--error-500);
+            color: white;
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-8);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card-value {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .stat-card-label {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .admin-card h3 {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .pending-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pending-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-3) 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .pending-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">Home Services</span>
+            </a>
+            <div class="header-actions">
+                <span class="admin-badge">ADMIN</span>
+                <span id="user-name">Admin</span>
+                <button class="btn-logout" onclick="AuthService.logout()">Déconnexion</button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <h1 style="margin-bottom: var(--spacing-8)">Tableau de bord Admin</h1>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">Total utilisateurs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">Prestataires vérifiés</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">Annonces actives</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value" style="color: var(--warning-500)">0</div>
+                    <div class="stat-card-label">Documents en attente</div>
+                </div>
+            </section>
+
+            <section class="admin-grid">
+                <div class="admin-card">
+                    <h3>📄 Documents à valider</h3>
+                    <ul class="pending-list" id="pending-docs">
+                        <li class="pending-item">
+                            <span style="color: var(--gray-500)">Aucun document en attente</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="admin-card">
+                    <h3>👥 Dernières inscriptions</h3>
+                    <ul class="pending-list" id="recent-users">
+                        <li class="pending-item">
+                            <span style="color: var(--gray-500)">Aucune inscription récente</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!AuthGuard.requireRole('ADMIN')) {
+            // Will redirect
+        } else {
+            const user = AuthService.getUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.nom;
+            }
+        }
+    </script>
+</body>
+
+</html>

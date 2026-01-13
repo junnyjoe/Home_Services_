@@ -2,25 +2,38 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: home-services
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/abidjan_prices}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/home_services}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
   jackson:
     serialization:
       write-dates-as-timestamps: false
+    default-property-inclusion: non_null
 
+# Configuration JWT
 jwt:
-  # Clé HMAC-SHA sécurisée (>= 256 bits). Remplacez en prod par une valeur secrète et stockée
-  # dans une variable d'environnement ou un secret manager.
-  secret: d1f2e3c4b5a6978877665544332211ffeeddccbbaa99887766554433221100aa
-  expirationMs: 3600000
+  secret: ${JWT_SECRET:d1f2e3c4b5a6978877665544332211ffeeddccbbaa99887766554433221100aa}
+  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION:86400000}
+  refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION:604800000}
 
-flyway:
+# Flyway migrations
+spring.flyway:
   enabled: true
   baseline-on-migrate: true
   locations: classpath:db/migration
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.home.services: DEBUG

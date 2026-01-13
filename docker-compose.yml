@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: home-services-db
+    environment:
+      POSTGRES_DB: home_services
+      POSTGRES_USER: homeservices
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-homeservices123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homeservices -d home_services"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - home-services-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: home-services-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/home_services
+      SPRING_DATASOURCE_USERNAME: homeservices
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-homeservices123}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-key-min-256-bits-for-production}
+      JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-3600000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      APP_UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "8080:8080"
+    networks:
+      - home-services-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (optional for production)
+  nginx:
+    image: nginx:alpine
+    container_name: home-services-nginx
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - home-services-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  home-services-network:
+    driver: bridge
