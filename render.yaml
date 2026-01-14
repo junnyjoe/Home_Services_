@@ -30,12 +30,12 @@ services:
           property: password
       - key: JWT_SECRET
         generateValue: true
-      - key: APP_UPLOAD_DIR
-        value: /data/uploads
-    disk:
-      name: uploads-data
-      mountPath: /data/uploads
-      sizeGB: 1
+#      - key: APP_UPLOAD_DIR
+#        value: /data/uploads
+#    disk:
+#      name: uploads-data
+#      mountPath: /data/uploads
+#      sizeGB: 1
 
 databases:
   - name: home-services-db
