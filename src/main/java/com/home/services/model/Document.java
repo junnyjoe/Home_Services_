@@ -24,31 +24,32 @@ public class Document {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "provider_id", nullable = false)
+    private User provider;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DocumentType type;
 
-    @Column(nullable = false)
-    private String filePath;
+    // Nom du fichier original
+    private String filename;
 
-    @Column
-    private String originalFileName;
+    // Chemin ou URL du fichier
+    @Column(nullable = false)
+    private String url;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
     private DocumentStatus statut = DocumentStatus.EN_ATTENTE;
 
-    // Commentaire de l'admin en cas de rejet
+    // Motif de refus si refusé
     @Column(columnDefinition = "TEXT")
-    private String commentaireAdmin;
+    private String motifRefus;
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime uploadedAt;
+    private LocalDateTime createdAt;
 
     private LocalDateTime validatedAt;
 }

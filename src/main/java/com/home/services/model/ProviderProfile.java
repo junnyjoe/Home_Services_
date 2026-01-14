@@ -48,9 +48,8 @@ public class ProviderProfile {
     private BigDecimal tarifHoraire;
 
     // Note moyenne (calculée à partir des évaluations)
-    @Column(precision = 3, scale = 2)
     @Builder.Default
-    private BigDecimal noteGlobale = BigDecimal.ZERO;
+    private Double noteGlobale = 0.0;
 
     @Builder.Default
     private Integer nombreAvis = 0;

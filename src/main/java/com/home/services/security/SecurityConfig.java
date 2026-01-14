@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -61,23 +62,30 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Pages statiques et ressources publiques
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/assets/**", "/images/**")
-                        .permitAll()
-                        .requestMatchers("/pages/auth/**", "/login.html", "/register.html").permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/index.html")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/css/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/js/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/images/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/pages/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/login.html")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/register.html")).permitAll()
 
                         // API publiques
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/categories").permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/public/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/categories")).permitAll()
 
                         // H2 Console (dev only)
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
 
                         // API Admin
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/admin/**")).hasRole("ADMIN")
 
                         // API Prestataire
-                        .requestMatchers("/api/providers/**").hasAnyRole("PRESTATAIRE", "ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/providers/**"))
+                        .hasAnyRole("PRESTATAIRE", "ADMIN")
 
                         // Toutes les autres requêtes nécessitent une authentification
                         .anyRequest().authenticated())

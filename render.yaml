@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: home-services-api
+    env: docker
+    plan: free # Change to 'starter' or higher if needed
+    region: frankfurt # Or your preferred region
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: home-services-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: home-services-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: home-services-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_UPLOAD_DIR
+        value: /data/uploads
+    disk:
+      name: uploads-data
+      mountPath: /data/uploads
+      sizeGB: 1
+
+databases:
+  - name: home-services-db
+    plan: free # Change to 'starter' if you need persistence (free DBs expire after 90 days)
+    region: frankfurt

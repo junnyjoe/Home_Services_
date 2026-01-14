@@ -6,5 +6,5 @@ package com.home.services.model.enums;
 public enum DocumentStatus {
     EN_ATTENTE, // En attente de validation
     VALIDE, // Document validé
-    REJETE // Document refusé
+    REFUSE // Document refusé
 }
