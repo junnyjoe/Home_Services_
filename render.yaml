@@ -8,10 +8,18 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: SPRING_DATASOURCE_URL
+      - key: DB_HOST
         fromDatabase:
           name: home-services-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: home-services-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: home-services-db
+          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: home-services-db
