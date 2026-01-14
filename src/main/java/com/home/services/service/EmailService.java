@@ -11,14 +11,22 @@ import org.springframework.stereotype.Service;
  * Service pour l'envoi d'emails
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    public EmailService(
+            @org.springframework.beans.factory.annotation.Autowired(required = false) JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
     @Async
     public void sendEmail(String to, String subject, String text) {
+        if (mailSender == null) {
+            log.warn("Email non envoyé à {} (JavaMailSender non configuré) : {}", to, subject);
+            return;
+        }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("Home Services <noreply@home-services.com>");
