@@ -206,6 +206,18 @@ img {
   animation: slideUp 0.6s ease-out;
 }
 
+.back-to-home {
+  display: block;
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  transition: color var(--transition-fast);
+}
+
+.back-to-home:hover {
+  color: var(--primary-600);
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;

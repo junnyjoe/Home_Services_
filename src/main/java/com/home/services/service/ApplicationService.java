@@ -30,6 +30,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ServiceRequestRepository serviceRequestRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     /**
      * Postuler à une annonce
@@ -71,6 +72,13 @@ public class ApplicationService {
         // Incrémenter le compteur de candidatures
         request.setNombreCandidatures(request.getNombreCandidatures() + 1);
         serviceRequestRepository.save(request);
+
+        // Envoyer une notification par mail au client
+        emailService.sendNewApplicationNotification(
+                request.getClient().getEmail(),
+                request.getClient().getNom(),
+                request.getTitre(),
+                provider.getNom());
 
         return toResponse(application, false);
     }

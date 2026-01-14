@@ -29,7 +29,17 @@ services:
           name: home-services-db
           property: password
       - key: JWT_SECRET
-        generateValue: true
+        value: 8eb3a6f1c2d5e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
 #      - key: APP_UPLOAD_DIR
 #        value: /data/uploads
 #    disk:
