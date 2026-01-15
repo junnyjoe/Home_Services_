@@ -33,13 +33,13 @@ services:
       - key: ALLOWED_ORIGINS
         value: "*"
       - key: MAIL_HOST
-        sync: false
+        value: smtp.gmail.com # Placeholder
       - key: MAIL_PORT
         value: 587
       - key: MAIL_USERNAME
-        sync: false
+        value: placeholder@example.com
       - key: MAIL_PASSWORD
-        sync: false
+        value: placeholder_password
       - key: APP_UPLOAD_DIR
         value: /app/uploads
 
