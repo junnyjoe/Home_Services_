@@ -332,6 +332,7 @@
             margin-bottom: var(--spacing-4);
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -391,86 +392,126 @@
 </head>
 
 <body>
-    <div class="dashboard">
-        <!-- Header -->
-        <header class="dashboard-header">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <a href="/" class="logo">
                 <div class="logo-icon">🏠</div>
                 <span class="logo-text">Home Services</span>
             </a>
-            <div class="header-actions">
+
+            <nav class="nav-menu">
+                <a href="/pages/provider/dashboard.html" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/pages/provider/requests.html" class="nav-item">
+                    <span class="nav-icon">🔍</span>
+                    <span>Annonces disponibles</span>
+                </a>
+                <a href="/pages/provider/my-applications.html" class="nav-item">
+                    <span class="nav-icon">✋</span>
+                    <span>Mes candidatures</span>
+                </a>
+                <a href="/pages/provider/profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>Mon profil</span>
+                </a>
+                <a href="/pages/messages.html" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span>Messages</span>
+                    <span id="msg-badge" class="badge-unread"
+                        style="display: none; background: var(--secondary-500); color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; margin-left: auto;">0</span>
+                </a>
+                <a href="/api/auth/logout" class="nav-item mt-auto"
+                    onclick="event.preventDefault(); AuthService.logout();">
+                    <span class="nav-icon">🚪</span>
+                    <span>Déconnexion</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Header (Internal UI) -->
+            <header class="flex justify-between items-center mb-8">
+                <div class="welcome-section">
+                    <h1 class="mb-0">Bonjour, <span id="welcome-name">Prestataire</span> !</h1>
+                    <p class="text-muted">Voici les dernières opportunités de services.</p>
+                </div>
                 <div class="user-info">
-                    <div class="user-avatar">🔧</div>
-                    <div>
+                    <div class="user-avatar shadow-sm">🔧</div>
+                    <div class="flex flex-col">
                         <span class="user-name" id="user-name">Chargement...</span>
                         <span class="verification-badge badge-pending" id="verification-badge">⏳ Non vérifié</span>
                     </div>
                 </div>
-                <button class="btn-logout" onclick="AuthService.logout()">Déconnexion</button>
-            </div>
-        </header>
+            </header>
 
-        <!-- Main Content -->
-        <main class="dashboard-content">
             <!-- Profile Alert -->
-            <div class="profile-alert" id="profile-alert">
+            <div class="profile-alert shadow-sm" id="profile-alert">
                 <div class="profile-alert-icon">⚠️</div>
                 <div class="profile-alert-content">
                     <h3>Complétez votre profil</h3>
                     <p>Pour recevoir des demandes de services, veuillez compléter votre profil et soumettre vos
                         documents d'identité.</p>
+                    <div class="completion-bar-container mt-3"
+                        style="background: rgba(0,0,0,0.1); border-radius: 10px; height: 10px; width: 100%; overflow: hidden;">
+                        <div id="completion-bar"
+                            style="background: var(--primary-500); height: 100%; width: 30%; transition: width 0.5s ease;">
+                        </div>
+                    </div>
+                    <small class="text-muted d-block mt-1">Complétion du profil : <span
+                            id="completion-text">30%</span></small>
                 </div>
                 <a href="/pages/provider/profile.html" class="btn btn-secondary">Compléter mon profil</a>
             </div>
 
-            <!-- Welcome -->
-            <section class="welcome-section">
-                <h1>Bienvenue, <span id="welcome-name">Prestataire</span> !</h1>
-                <p>Voici les dernières opportunités de services</p>
-            </section>
-
             <!-- Stats -->
             <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-card-icon orange">📋</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon orange shadow-sm">📋</div>
                     <div class="stat-card-value" id="stat-available">0</div>
                     <div class="stat-card-label">Annonces disponibles</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon blue">✋</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon blue shadow-sm">✋</div>
                     <div class="stat-card-value" id="stat-applications">0</div>
                     <div class="stat-card-label">Mes candidatures</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon green">✅</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon green shadow-sm">✅</div>
                     <div class="stat-card-value" id="stat-completed">0</div>
                     <div class="stat-card-label">Services réalisés</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon purple">⭐</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon purple shadow-sm">⭐</div>
                     <div class="stat-card-value" id="stat-rating">-</div>
                     <div class="stat-card-label">Note moyenne</div>
                 </div>
             </section>
 
             <!-- Quick Actions -->
+            <div class="section-header">
+                <h2>Actions rapides</h2>
+            </div>
             <section class="quick-actions">
                 <a href="/pages/provider/requests.html" class="action-card">
-                    <div class="action-icon">🔍</div>
+                    <div class="action-icon" style="background: var(--bg-gradient-warm)">🔍</div>
                     <div class="action-content">
                         <h3>Voir les annonces</h3>
                         <p>Parcourir les demandes de services</p>
                     </div>
                 </a>
                 <a href="/pages/provider/profile.html" class="action-card">
-                    <div class="action-icon">📝</div>
+                    <div class="action-icon" style="background: var(--bg-gradient-warm)">📝</div>
                     <div class="action-content">
                         <h3>Mon profil</h3>
                         <p>Gérer mes compétences et tarifs</p>
                     </div>
                 </a>
                 <a href="/pages/messages.html" class="action-card">
-                    <div class="action-icon">💬</div>
+                    <div class="action-icon" style="background: var(--bg-gradient-warm)">💬</div>
                     <div class="action-content">
                         <h3>Messages</h3>
                         <p>Échangez avec les clients</p>
@@ -499,24 +540,123 @@
     <script>
         // Require provider role
         if (!AuthGuard.requireRole('PRESTATAIRE')) {
-            // Will redirect
+            // Will redirect automatically
         } else {
-            // Load user info
-            const user = AuthService.getUser();
-            if (user) {
-                document.getElementById('user-name').textContent = user.nom;
-                document.getElementById('welcome-name').textContent = user.nom.split(' ')[0];
+            // Main App Initialization
+            async function initDashboard() {
+                const user = AuthService.getUser();
+                if (user) {
+                    document.getElementById('user-name').textContent = user.nom;
+                    document.getElementById('welcome-name').textContent = user.nom.split(' ')[0];
 
-                // Update verification badge
-                const badge = document.getElementById('verification-badge');
-                if (user.verified) {
-                    badge.className = 'verification-badge badge-verified';
-                    badge.textContent = '✓ Vérifié';
-                    document.getElementById('profile-alert').style.display = 'none';
+                    // Update verification badge
+                    const badge = document.getElementById('verification-badge');
+                    if (user.verified) {
+                        badge.className = 'verification-badge badge-verified';
+                        badge.textContent = '✓ Vérifié';
+                        document.getElementById('profile-alert').style.display = 'none';
+                    }
+                }
+
+                // Load Stats
+                try {
+                    const statsResponse = await StatsService.getProviderStats();
+                    if (statsResponse.success) {
+                        const stats = statsResponse.data;
+                        document.getElementById('stat-available').textContent = stats.availableRequests || 0;
+                        document.getElementById('stat-applications').textContent = stats.myApplications || 0;
+                        document.getElementById('stat-completed').textContent = stats.completedServices || 0;
+                        document.getElementById('stat-rating').textContent = stats.averageRating ? stats.averageRating.toFixed(1) : '-';
+
+                        // Calculate completion
+                        let completion = 30; // Base completion for account creation
+                        if (user.telephone) completion += 20;
+                        if (user.verified) completion = 100;
+                        else if (stats.hasDocuments) completion += 50; // Assume 50% for documents sent
+
+                        document.getElementById('completion-bar').style.width = `${completion}%`;
+                        document.getElementById('completion-text').textContent = `${completion}%`;
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du chargement des statistiques:', error);
+                }
+
+                // Load Unread Messages Count
+                try {
+                    const unreadResponse = await MessageService.getUnreadCount();
+                    if (unreadResponse.success && unreadResponse.data.count > 0) {
+                        const badge = document.getElementById('msg-badge');
+                        badge.textContent = unreadResponse.data.count;
+                        badge.style.display = 'inline-block';
+                    }
+                } catch (error) {
+                    console.error('Erreur notifications:', error);
+                }
+
+                // Load Recent Requests
+                try {
+                    const requestsResponse = await ServiceRequestService.getRecent(3);
+                    if (requestsResponse.success) {
+                        renderRecentRequests(requestsResponse.data);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du chargement des annonces:', error);
                 }
             }
 
-            // TODO: Load actual stats and requests from API
+            function renderRecentRequests(requests) {
+                const listContainer = document.getElementById('requests-list');
+
+                if (!requests || requests.length === 0) {
+                    // Keep empty state or show a shorter version
+                    return;
+                }
+
+                listContainer.innerHTML = requests.map(request => `
+                    <div class="request-card shadow-sm">
+                        <div class="request-header">
+                            <span class="request-category">
+                                <span>${getCategoryIcon(request.category)}</span>
+                                ${request.category}
+                            </span>
+                            <span class="request-urgency urgency-${request.urgency.toLowerCase().replace(' ', '-')}">
+                                ${request.urgency}
+                            </span>
+                        </div>
+                        <h3 class="request-title">${request.titre}</h3>
+                        <p class="request-description">${request.description}</p>
+                        <div class="request-meta">
+                            <span>📍 ${request.ville}</span>
+                            <span>💰 ${request.budget} FCFA</span>
+                            <span>⏱️ ${new Date(request.dateCreation).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <div class="request-actions">
+                            <a href="/pages/provider/request-details.html?id=${request.id}" class="btn btn-primary btn-sm">Détails</a>
+                            <button onclick="applyToRequest(${request.id})" class="btn btn-secondary btn-sm">Postuler</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function getCategoryIcon(category) {
+                const icons = {
+                    'PLOMBERIE': '🚰',
+                    'ELECTRICITE': '⚡',
+                    'MENAGE': '🧹',
+                    'JARDINAGE': '🌳',
+                    'MECANIQUE': '🔧',
+                    'CLIMATISATION': '❄️'
+                };
+                return icons[category.toUpperCase()] || '📋';
+            }
+
+            async function applyToRequest(requestId) {
+                // Simplified apply logic for dashboard
+                window.location.href = `/pages/provider/request-details.html?id=${requestId}&apply=true`;
+            }
+
+            // Run on load
+            initDashboard();
         }
     </script>
 </body>

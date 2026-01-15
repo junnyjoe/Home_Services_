@@ -20,32 +20,36 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: var(--bg-gradient);
+      background: var(--bg-mesh);
+      background-size: 200% 200%;
+      animation: meshAnim 15s ease infinite;
       position: relative;
       overflow: hidden;
+    }
+
+    @keyframes meshAnim {
+      0% {
+        background-position: 0% 50%
+      }
+
+      50% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0% 50%
+      }
     }
 
     .hero::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
-      animation: float 20s infinite ease-in-out;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translate(0, 0);
-      }
-
-      50% {
-        transform: translate(-5%, 5%);
-      }
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(2px);
     }
 
     /* Navbar */
@@ -215,17 +219,24 @@
 
     .category-card {
       background: white;
-      border-radius: var(--radius-xl);
-      padding: var(--spacing-6);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-8);
       text-align: center;
       box-shadow: var(--shadow-md);
-      transition: all var(--transition-fast);
+      transition: all var(--transition-base);
       cursor: pointer;
+      border: 1px solid var(--gray-100);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-4);
     }
 
     .category-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-xl);
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-2xl), var(--shadow-glow);
+      border-color: var(--primary-200);
     }
 
     .category-icon {
@@ -322,9 +333,16 @@
       gap: var(--spacing-3);
     }
 
-    .user-greeting {
-      color: white;
-      font-weight: 500;
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -339,7 +357,8 @@
       </div>
 
       <div class="navbar-links" id="nav-links">
-        <!-- Links will be populated by JavaScript -->
+        <a href="/pages/auth/login.html" class="btn btn-ghost">Connexion</a>
+        <a href="/pages/auth/register.html" class="btn btn-primary">Inscription</a>
       </div>
     </nav>
 
@@ -353,7 +372,8 @@
         Ménage, plomberie, électricité et bien plus.
       </p>
       <div class="hero-cta" id="hero-cta">
-        <!-- CTA will be populated by JavaScript -->
+        <a href="/pages/auth/register.html" class="btn btn-primary">Commencer maintenant</a>
+        <a href="/pages/auth/login.html" class="btn btn-secondary">J'ai déjà un compte</a>
       </div>
 
       <div class="stats">
@@ -374,7 +394,7 @@
   </section>
 
   <!-- Categories Section -->
-  <section class="categories-section">
+  <section class="categories-section reveal">
     <div class="section-title">
       <h2>Nos catégories de services</h2>
       <p>Trouvez le service dont vous avez besoin</p>
@@ -417,7 +437,7 @@
   </section>
 
   <!-- How it works -->
-  <section class="how-it-works">
+  <section class="how-it-works reveal">
     <div class="section-title">
       <h2>Comment ça marche ?</h2>
       <p>Simple et rapide en 3 étapes</p>
@@ -454,6 +474,12 @@
       const navLinks = document.getElementById('nav-links');
       const heroCta = document.getElementById('hero-cta');
 
+      // Safety check: if api.js failed to load
+      if (typeof AuthService === 'undefined') {
+        console.warn('AuthService not found, using fallback navigation');
+        return;
+      }
+
       if (AuthService.isAuthenticated()) {
         const user = AuthService.getUser();
 
@@ -470,25 +496,30 @@
                         ${user.role === 'CLIENT' ? 'Publier une annonce' : 'Voir les annonces'}
                     </a>
                 `;
-      } else {
-        navLinks.innerHTML = `
-                    <a href="/pages/auth/login.html" class="btn btn-ghost">Connexion</a>
-                    <a href="/pages/auth/register.html" class="btn btn-primary">Inscription</a>
-                `;
-
-        heroCta.innerHTML = `
-                    <a href="/pages/auth/register.html" class="btn btn-primary">Commencer maintenant</a>
-                    <a href="/pages/auth/login.html" class="btn btn-secondary">J'ai déjà un compte</a>
-                `;
       }
+      // No need for 'else' since HTML already contains non-authenticated version
     }
 
     function goToDashboard() {
-      AuthService.redirectBasedOnRole();
+      if (typeof AuthService !== 'undefined') {
+        AuthService.redirectBasedOnRole();
+      }
     }
 
-    // Initialize
-    updateNavigation();
+    // Scroll Reveal Observer
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNavigation();
+      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    });
   </script>
 </body>
 

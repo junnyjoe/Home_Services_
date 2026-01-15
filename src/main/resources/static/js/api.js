@@ -65,8 +65,14 @@ const ApiClient = {
             ...options
         };
 
-        if (options.body && typeof options.body === 'object') {
+        if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
             config.body = JSON.stringify(options.body);
+        } else if (options.body instanceof FormData) {
+            config.body = options.body;
+            // Remove application/json if it was set by default
+            if (config.headers['Content-Type'] === 'application/json') {
+                delete config.headers['Content-Type'];
+            }
         }
 
         try {
@@ -332,11 +338,92 @@ const AuthGuard = {
     }
 };
 
+// ============================================
+// Service Requests Service
+// ============================================
+
+const ServiceRequestService = {
+    async getAll(filters = {}) {
+        const queryParams = new URLSearchParams(filters).toString();
+        const endpoint = `/service-requests${queryParams ? `?${queryParams}` : ''}`;
+        return await ApiClient.get(endpoint);
+    },
+
+    async getById(id) {
+        return await ApiClient.get(`/service-requests/${id}`);
+    },
+
+    async getRecent(limit = 5) {
+        return await ApiClient.get(`/service-requests/recent?limit=${limit}`);
+    },
+
+    async create(requestData) {
+        return await ApiClient.post('/service-requests', requestData);
+    }
+};
+
+// ============================================
+// Provider Service
+// ============================================
+
+const ProviderService = {
+    async getMyApplications() {
+        return await ApiClient.get('/providers/me/applications');
+    },
+
+    async apply(requestId, applicationData) {
+        return await ApiClient.post(`/service-requests/${requestId}/apply`, applicationData);
+    },
+
+    async updateProfile(profileData) {
+        return await ApiClient.put('/providers/me/profile', profileData);
+    },
+
+    async uploadDocument(type, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
+
+        return await ApiClient.request('/documents/upload', {
+            method: 'POST',
+            body: formData
+        });
+    }
+};
+
+// ============================================
+// Stats Service
+// ============================================
+
+const StatsService = {
+    async getProviderStats() {
+        return await ApiClient.get('/stats/provider');
+    },
+
+    async getClientStats() {
+        return await ApiClient.get('/stats/client');
+    }
+};
+
+// ============================================
+// Message Service
+// ============================================
+
+const MessageService = {
+    async getUnreadCount() {
+        return await ApiClient.get('/messages/unread/count');
+    }
+};
+
 // Export for use in other files
 window.TokenManager = TokenManager;
 window.ApiClient = ApiClient;
 window.AuthService = AuthService;
 window.CategoryService = CategoryService;
+window.ServiceRequestService = ServiceRequestService;
+window.ProviderService = ProviderService;
+window.StatsService = StatsService;
+window.MessageService = MessageService;
 window.UI = UI;
 window.Validators = Validators;
 window.AuthGuard = AuthGuard;

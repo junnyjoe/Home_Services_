@@ -1,0 +1,5 @@
+﻿Apache Maven 3.9.12 (848fbb4bf2d427b72bdb2471c22fced7ebd9a7a1)
+Maven home: C:\Users\HP\.m2\wrapper\dists\apache-maven-3.9.12-bin\137qdbtfh6nee7p83ils6q9qic\apache-maven-3.9.12
+Java version: 17.0.17, vendor: Eclipse Adoptium, runtime: C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot
+Default locale: fr_FR, platform encoding: Cp1252
+OS name: "windows 11", version: "10.0", arch: "amd64", family: "windows"

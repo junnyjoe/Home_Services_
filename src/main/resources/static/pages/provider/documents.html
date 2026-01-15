@@ -266,21 +266,24 @@
         if (!AuthGuard.requireRole('PRESTATAIRE')) { /* redirect */ }
 
         async function loadDocuments() {
+            const container = document.getElementById('documents-container');
             try {
+                // Using a regular ApiClient get as this endpoint might be specific
                 const response = await ApiClient.get('/documents/my');
                 if (response.success) {
                     renderDocuments(response.data || []);
                 }
             } catch (error) {
-                document.getElementById('documents-container').innerHTML = `
-                    <p style="color: var(--error-500); text-align: center;">${error.message}</p>
+                console.error('Erreur chargement:', error);
+                container.innerHTML = `
+                    <p style="color: var(--error-500); text-align: center;">Impossible de charger vos documents</p>
                 `;
             }
         }
 
         function renderDocuments(docs) {
             const container = document.getElementById('documents-container');
-            if (docs.length === 0) {
+            if (!docs || docs.length === 0) {
                 container.innerHTML = `
                     <p style="color: var(--gray-400); text-align: center;">Aucun document uploadé</p>
                 `;
@@ -291,12 +294,12 @@
                     <div class="document-info">
                         <span class="document-icon">${getDocTypeIcon(doc.type)}</span>
                         <div>
-                            <div class="document-name">${doc.typeLabel}</div>
-                            <div class="document-meta">${doc.filename} • ${formatDate(doc.createdAt)}</div>
+                            <div class="document-name">${doc.typeLabel || doc.type}</div>
+                            <div class="document-meta">${doc.filename} • ${formatDate(doc.dateCreation || doc.createdAt)}</div>
                             ${doc.motifRefus ? `<div style="color: var(--error-500); font-size: var(--font-size-sm);">Motif: ${escapeHtml(doc.motifRefus)}</div>` : ''}
                         </div>
                     </div>
-                    <span class="status-badge status-${doc.statut.toLowerCase().replace('_', '-')}">${doc.statutLabel}</span>
+                    <span class="status-badge status-${doc.statut.toLowerCase().replace('_', '-')}">${doc.statutLabel || translateStatut(doc.statut)}</span>
                 </div>
             `).join('');
         }
@@ -306,39 +309,77 @@
             return icons[type] || '📄';
         }
 
-        async function uploadFile(file, type) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('type', type);
+        function translateStatut(statut) {
+            const map = {
+                'EN_ATTENTE': 'En attente',
+                'VALIDE': 'Validé',
+                'REFUSE': 'Refusé'
+            };
+            return map[statut] || statut;
+        }
+
+        async function uploadFile(file, type, cardId) {
+            const card = document.getElementById(cardId);
+            const btn = card.querySelector('.btn-upload');
+            const originalText = btn.textContent;
+
+            // Show local preview if it's an image
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const iconDiv = card.querySelector('.upload-icon');
+                    iconDiv.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-lg);">`;
+                };
+                reader.readAsDataURL(file);
+            }
 
             try {
-                const response = await fetch('/api/documents/upload', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` },
-                    body: formData
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert('Document uploadé avec succès !');
+                btn.textContent = 'Upload en cours...';
+                btn.disabled = true;
+
+                const response = await ProviderService.uploadDocument(type, file);
+
+                if (response.success) {
+                    card.classList.add('has-file');
+                    // Add success checkmark overlay
+                    card.style.position = 'relative';
+                    const check = document.createElement('div');
+                    check.innerHTML = '✅';
+                    check.style.cssText = 'position: absolute; top: 10px; right: 10px; font-size: 1.5rem;';
+                    card.appendChild(check);
+
+                    UI.showAlert('#documents-container', 'Document envoyé avec succès !', 'success');
                     loadDocuments();
                 } else {
-                    alert(data.message || 'Erreur lors de l\'upload');
+                    alert(response.message || 'Erreur lors de l\'upload');
                 }
             } catch (error) {
+                console.error('Upload error:', error);
                 alert('Erreur: ' + error.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         }
 
         // File input handlers
         document.getElementById('file-cni').addEventListener('change', (e) => {
-            if (e.target.files[0]) uploadFile(e.target.files[0], 'CNI');
+            if (e.target.files[0]) uploadFile(e.target.files[0], 'CNI', 'card-cni');
         });
         document.getElementById('file-attestation').addEventListener('change', (e) => {
-            if (e.target.files[0]) uploadFile(e.target.files[0], 'ATTESTATION');
+            if (e.target.files[0]) uploadFile(e.target.files[0], 'ATTESTATION', 'card-attestation');
         });
 
-        function formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('fr-FR'); }
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Date inconnue';
+            return new Date(dateStr).toLocaleDateString('fr-FR');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         loadDocuments();
     </script>

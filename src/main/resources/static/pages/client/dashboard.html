@@ -305,50 +305,78 @@
 </head>
 
 <body>
-    <div class="dashboard">
-        <!-- Header -->
-        <header class="dashboard-header">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <a href="/" class="logo">
                 <div class="logo-icon">🏠</div>
                 <span class="logo-text">Home Services</span>
             </a>
-            <div class="header-actions">
-                <div class="user-info">
-                    <div class="user-avatar">👤</div>
-                    <span class="user-name" id="user-name">Chargement...</span>
-                </div>
-                <button class="btn-logout" onclick="AuthService.logout()">Déconnexion</button>
-            </div>
-        </header>
+
+            <nav class="nav-menu">
+                <a href="/pages/client/dashboard.html" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/pages/client/my-requests.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Mes annonces</span>
+                </a>
+                <a href="/pages/client/new-request.html" class="nav-item">
+                    <span class="nav-icon">➕</span>
+                    <span>Nouvelle annonce</span>
+                </a>
+                <a href="/pages/messages.html" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span>Messages</span>
+                    <span id="msg-badge" class="badge-unread"
+                        style="display: none; background: var(--secondary-500); color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; margin-left: auto;">0</span>
+                </a>
+                <a href="/api/auth/logout" class="nav-item mt-auto"
+                    onclick="event.preventDefault(); AuthService.logout();">
+                    <span class="nav-icon">🚪</span>
+                    <span>Déconnexion</span>
+                </a>
+            </nav>
+        </aside>
 
         <!-- Main Content -->
         <main class="dashboard-content">
-            <!-- Welcome -->
-            <section class="welcome-section">
-                <h1>Bienvenue, <span id="welcome-name">Client</span> !</h1>
-                <p>Que souhaitez-vous faire aujourd'hui ?</p>
-            </section>
+            <!-- Header (Internal UI) -->
+            <header class="flex justify-between items-center mb-8">
+                <div class="welcome-section">
+                    <h1 class="mb-0">Bonjour, <span id="welcome-name">Client</span> !</h1>
+                    <p class="text-muted">Ravi de vous revoir sur votre espace.</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar shadow-sm">👤</div>
+                    <span class="user-name" id="user-name">Chargement...</span>
+                </div>
+            </header>
 
             <!-- Stats -->
             <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-card-icon blue">📋</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon blue shadow-sm">📋</div>
                     <div class="stat-card-value" id="stat-requests">0</div>
                     <div class="stat-card-label">Annonces publiées</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon orange">📨</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon orange shadow-sm">📨</div>
                     <div class="stat-card-value" id="stat-applications">0</div>
                     <div class="stat-card-label">Candidatures reçues</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon green">✅</div>
+                <div class="glass-stat">
+                    <div class="stat-card-icon green shadow-sm">✅</div>
                     <div class="stat-card-value" id="stat-completed">0</div>
                     <div class="stat-card-label">Services terminés</div>
                 </div>
             </section>
 
             <!-- Quick Actions -->
+            <div class="section-header">
+                <h2>Actions rapides</h2>
+            </div>
             <section class="quick-actions">
                 <a href="/pages/client/new-request.html" class="action-card">
                     <div class="action-icon">➕</div>
@@ -394,16 +422,100 @@
     <script>
         // Require client role
         if (!AuthGuard.requireRole('CLIENT')) {
-            // Will redirect
+            // Will redirect automatically
         } else {
-            // Load user info
-            const user = AuthService.getUser();
-            if (user) {
-                document.getElementById('user-name').textContent = user.nom;
-                document.getElementById('welcome-name').textContent = user.nom.split(' ')[0];
+            // Main App Initialization
+            async function initDashboard() {
+                const user = AuthService.getUser();
+                if (user) {
+                    document.getElementById('user-name').textContent = user.nom;
+                    document.getElementById('welcome-name').textContent = user.nom.split(' ')[0];
+                }
+
+                // Load Stats
+                try {
+                    const statsResponse = await StatsService.getClientStats();
+                    if (statsResponse.success) {
+                        const stats = statsResponse.data;
+                        document.getElementById('stat-active').textContent = stats.activeRequests || 0;
+                        document.getElementById('stat-applications').textContent = stats.totalApplications || 0;
+                        document.getElementById('stat-completed').textContent = stats.completedServices || 0;
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du chargement des statistiques:', error);
+                }
+
+                // Load Unread Messages Count
+                try {
+                    const unreadResponse = await MessageService.getUnreadCount();
+                    if (unreadResponse.success && unreadResponse.data.count > 0) {
+                        const badge = document.getElementById('msg-badge');
+                        badge.textContent = unreadResponse.data.count;
+                        badge.style.display = 'inline-block';
+                    }
+                } catch (error) {
+                    console.error('Erreur notifications:', error);
+                }
+
+                // Load Recent Activity (Client's Own Requests)
+                try {
+                    // For now, using a general recent requests or a filtered view if implemented
+                    // If no specific "my recent" endpoint, we can use the general one 
+                    // or just show an empty state for now until /api/client/requests is ready
+                    const requestsResponse = await ServiceRequestService.getAll({ clientId: user.id, limit: 5 });
+                    if (requestsResponse.success) {
+                        renderRecentActivity(requestsResponse.data);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du chargement de l\'activité:', error);
+                }
             }
 
-            // TODO: Load actual stats and activity from API
+            function renderRecentActivity(activities) {
+                const listContainer = document.getElementById('activity-list');
+
+                if (!activities || activities.length === 0) {
+                    return;
+                }
+
+                listContainer.innerHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            ${getActivityIcon(activity.status)}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">${activity.titre}</div>
+                            <div class="activity-time">${new Date(activity.dateCreation).toLocaleDateString('fr-FR')}</div>
+                        </div>
+                        <span class="activity-status status-${activity.status.toLowerCase()}">
+                            ${translateStatus(activity.status)}
+                        </span>
+                    </div>
+                `).join('');
+            }
+
+            function getActivityIcon(status) {
+                switch (status) {
+                    case 'OUVERT': return '📝';
+                    case 'EN_COURS': return '⚙️';
+                    case 'TERMINE': return '✅';
+                    case 'ANNULE': return '❌';
+                    default: return '📋';
+                }
+            }
+
+            function translateStatus(status) {
+                const map = {
+                    'OUVERT': 'Ouvert',
+                    'EN_COURS': 'En cours',
+                    'TERMINE': 'Terminé',
+                    'ANNULE': 'Annulé'
+                };
+                return map[status] || status;
+            }
+
+            // Run on load
+            initDashboard();
         }
     </script>
 </body>
